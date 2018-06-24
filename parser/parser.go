@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/pkg/errors"
@@ -14,8 +13,10 @@ import (
 type prefixParseFn func() ast.Expression
 type infixParseFn func(ast.Expression) ast.Expression
 
+type precedence int
+
 const (
-	lowest = iota
+	lowest precedence = iota
 	equals
 	lessgreater
 	sum
@@ -23,6 +24,18 @@ const (
 	prefix
 	call
 )
+
+var precedences = map[token.TokenType]precedence{
+	token.Equals:      equals,
+	token.NotEqual:    equals,
+	token.LessThan:    lessgreater,
+	token.GreaterThan: lessgreater,
+	token.Plus:        sum,
+	token.Minus:       sum,
+	token.Asterisk:    product,
+	token.Slash:       product,
+	token.LParen:      call,
+}
 
 type Parser struct {
 	l *lexer.Lexer
@@ -50,6 +63,21 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.Bang, p.parsePrefixExpression)
 	p.registerPrefix(token.Minus, p.parsePrefixExpression)
 
+	p.registerInfix(token.Plus, p.parseInfixExpression)
+	p.registerInfix(token.Minus, p.parseInfixExpression)
+	p.registerInfix(token.Asterisk, p.parseInfixExpression)
+	p.registerInfix(token.Slash, p.parseInfixExpression)
+
+	p.registerInfix(token.Equals, p.parseInfixExpression)
+	p.registerInfix(token.NotEqual, p.parseInfixExpression)
+	p.registerInfix(token.LessThan, p.parseInfixExpression)
+	p.registerInfix(token.GreaterThan, p.parseInfixExpression)
+
+	p.registerPrefix(token.True, p.parseBoolean)
+	p.registerPrefix(token.False, p.parseBoolean)
+
+	p.registerPrefix(token.LParen, p.parseGroupedExpression)
+
 	return p
 }
 
@@ -60,7 +88,6 @@ func (p *Parser) ParseProgram() *ast.Program {
 	for p.curToken.Type != token.EOF {
 		if stmt := p.parseStatement(); stmt != nil {
 			prog.Statements = append(prog.Statements, stmt)
-			fmt.Println(":::", stmt)
 		}
 
 		p.nextToken()
@@ -152,7 +179,7 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	return &lit
 }
 
-func (p *Parser) parseExpression(precedence int) ast.Expression {
+func (p *Parser) parseExpression(prec precedence) ast.Expression {
 	prefix := p.prefixParseFns[p.curToken.Type]
 	if prefix == nil {
 		p.errors = append(p.errors, errors.Errorf("No prefix handler for %q found", p.curToken.Type))
@@ -160,6 +187,17 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	}
 
 	leftExp := prefix()
+	for p.peekToken.Type != token.Semicolon && prec < p.peekPrecedence() {
+		infix := p.infixParseFns[p.peekToken.Type]
+		if infix == nil {
+			return leftExp
+		}
+
+		p.nextToken()
+
+		leftExp = infix(leftExp)
+	}
+
 	return leftExp
 }
 
@@ -173,6 +211,41 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 	expression.Right = p.parseExpression(prefix)
 
 	return &expression
+}
+
+func (p *Parser) parseBoolean() ast.Expression {
+	expression := ast.Boolean{
+		Token: p.curToken,
+		Value: p.curToken.Type == token.True,
+	}
+
+	return &expression
+}
+
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	expression := ast.InfixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+		Left:     left,
+	}
+
+	prec := p.curPrecedence()
+	p.nextToken()
+	expression.Right = p.parseExpression(prec)
+
+	return &expression
+}
+
+func (p *Parser) parseGroupedExpression() ast.Expression {
+	p.nextToken()
+
+	expression := p.parseExpression(lowest)
+
+	if !p.expectPeek(token.RParen) {
+		return nil
+	}
+
+	return expression
 }
 
 func (p *Parser) expectPeek(expect token.TokenType) bool {
@@ -189,6 +262,22 @@ func (p *Parser) registerPrefix(tt token.TokenType, fn prefixParseFn) {
 	p.prefixParseFns[tt] = fn
 }
 
-func (p *Parser) registerInfix(tt token.TokenType, fn prefixParseFn) {
-	p.prefixParseFns[tt] = fn
+func (p *Parser) registerInfix(tt token.TokenType, fn infixParseFn) {
+	p.infixParseFns[tt] = fn
+}
+
+func (p *Parser) peekPrecedence() precedence {
+	if p, ok := precedences[p.peekToken.Type]; ok {
+		return p
+	}
+
+	return lowest
+}
+
+func (p *Parser) curPrecedence() precedence {
+	if p, ok := precedences[p.curToken.Type]; ok {
+		return p
+	}
+
+	return lowest
 }

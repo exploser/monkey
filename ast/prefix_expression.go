@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"strings"
+	"fmt"
 
 	"git.exsdev.ru/ExS/gop/token"
 )
@@ -21,11 +21,5 @@ func (pe *PrefixExpression) TokenLiteral() string {
 }
 
 func (pe *PrefixExpression) String() string {
-	var out strings.Builder
-	out.WriteRune('(')
-	out.WriteString(pe.Operator)
-	out.WriteString(pe.Right.String())
-	out.WriteRune(')')
-
-	return out.String()
+	return fmt.Sprintf("(%s%s)", pe.Operator, pe.Right)
 }

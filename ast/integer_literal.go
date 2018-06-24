@@ -2,6 +2,8 @@ package ast
 
 import "git.exsdev.ru/ExS/gop/token"
 
+var _ Expression = new(IntegerLiteral)
+
 type IntegerLiteral struct {
 	Token token.Token
 	Value int64

@@ -36,25 +36,6 @@ func TestLetStatements(t *testing.T) {
 		testLetStatement(t, stmt, tt)
 	}
 }
-
-func testLetStatement(t *testing.T, s ast.Statement, name string) {
-	require.Equal(t, s.TokenLiteral(), "let")
-	require.IsType(t, new(ast.LetStatement), s)
-	let := s.(*ast.LetStatement)
-	require.Equal(t, name, let.Name.Value)
-	require.Equal(t, name, let.Name.TokenLiteral())
-}
-
-func checkParserErrors(t *testing.T, p *parser.Parser) {
-	if !assert.Empty(t, p.Errors()) {
-		for _, e := range p.Errors() {
-			t.Error(e)
-		}
-
-		t.FailNow()
-	}
-}
-
 func TestReturnStatements(t *testing.T) {
 	input := `
 	return 5;
@@ -95,11 +76,7 @@ func TestIdentifierExpression(t *testing.T) {
 		require.IsType(t, new(ast.ExpressionStatement), stmt)
 
 		expr := stmt.(*ast.ExpressionStatement)
-		require.IsType(t, new(ast.Identifier), expr.Expression)
-
-		ident := expr.Expression.(*ast.Identifier)
-		require.Equal(t, ident.Value, "foobar")
-		require.Equal(t, ident.TokenLiteral(), "foobar")
+		testIdentifier(t, expr.Expression, "foobar")
 	}
 }
 
@@ -130,12 +107,14 @@ func TestIntegerLiteralExpression(t *testing.T) {
 
 func TestPrefixExpressions(t *testing.T) {
 	prefixTests := []struct {
-		input        string
-		operator     string
-		integerValue int64
+		input    string
+		operator string
+		expected interface{}
 	}{
 		{"!5;", "!", 5},
 		{"-15;", "-", 15},
+		{"-b;", "-", "b"},
+		{"!false;", "!", false},
 	}
 
 	for _, tt := range prefixTests {
@@ -151,21 +130,16 @@ func TestPrefixExpressions(t *testing.T) {
 
 		require.IsType(t, new(ast.PrefixExpression), expr.Expression)
 		prefix := expr.Expression.(*ast.PrefixExpression)
-
-		require.IsType(t, new(ast.IntegerLiteral), prefix.Right)
-		integerLiteral := prefix.Right.(*ast.IntegerLiteral)
-
-		require.Equal(t, tt.integerValue, integerLiteral.Value)
-		require.Equal(t, fmt.Sprint(tt.integerValue), integerLiteral.TokenLiteral())
+		testLiteralExpression(t, prefix.Right, tt.expected)
 	}
 }
 
 func TestInfixExpression(t *testing.T) {
 	infixTests := []struct {
 		input    string
-		left     int64
+		left     interface{}
 		operator string
-		right    int64
+		right    interface{}
 	}{
 		{"5 + 5;", 5, "+", 5},
 		{"5 - 5;", 5, "-", 5},
@@ -175,6 +149,134 @@ func TestInfixExpression(t *testing.T) {
 		{"5 > 5;", 5, ">", 5},
 		{"5 == 5;", 5, "==", 5},
 		{"5 != 5;", 5, "!=", 5},
+		{"a > b;", "a", ">", "b"},
 	}
 
+	for _, tt := range infixTests {
+		l := lexer.New(tt.input)
+		p := parser.New(l)
+
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		require.Equal(t, 1, len(program.Statements))
+		require.IsType(t, new(ast.ExpressionStatement), program.Statements[0])
+
+		stmt := program.Statements[0].(*ast.ExpressionStatement)
+		testInfixExpression(t, stmt.Expression, tt.left, tt.operator, tt.right)
+	}
+}
+
+func TestBooleanLiteralExpression(t *testing.T) {
+	input := "true;"
+
+	l := lexer.New(input)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	require.NotNil(t, program)
+
+	assert.Equal(t, 1, len(program.Statements), "program should have 1 statement")
+
+	for _, stmt := range program.Statements {
+		require.IsType(t, new(ast.ExpressionStatement), stmt)
+
+		expr := stmt.(*ast.ExpressionStatement)
+		require.IsType(t, new(ast.Boolean), expr.Expression)
+
+		integer := expr.Expression.(*ast.Boolean)
+		require.Equal(t, integer.Value, true)
+		require.Equal(t, integer.TokenLiteral(), "true")
+	}
+}
+
+func TestOperatorPrecedence(t *testing.T) {
+	tests := []struct {
+		input, expected string
+	}{
+		{
+			"1 + (2 + 3) + 4;",
+			"((1 + (2 + 3)) + 4); ",
+		},
+		{
+			"1 + 2 * 3 + 4;",
+			"((1 + (2 * 3)) + 4); ",
+		},
+	}
+
+	for _, tt := range tests {
+		l := lexer.New(tt.input)
+		p := parser.New(l)
+		prog := p.ParseProgram()
+		checkParserErrors(t, p)
+		require.Equal(t, tt.expected, prog.String())
+	}
+}
+
+func testIdentifier(t *testing.T, expr ast.Expression, value string) {
+	require.IsType(t, new(ast.Identifier), expr)
+	ident := expr.(*ast.Identifier)
+
+	require.Equal(t, ident.Value, value)
+	require.Equal(t, ident.TokenLiteral(), value)
+}
+
+func testLetStatement(t *testing.T, s ast.Statement, name string) {
+	require.Equal(t, s.TokenLiteral(), "let")
+	require.IsType(t, new(ast.LetStatement), s)
+	let := s.(*ast.LetStatement)
+	require.Equal(t, name, let.Name.Value)
+	require.Equal(t, name, let.Name.TokenLiteral())
+}
+
+func checkParserErrors(t *testing.T, p *parser.Parser) {
+	if !assert.Empty(t, p.Errors()) {
+		for _, e := range p.Errors() {
+			t.Error(e)
+		}
+
+		t.FailNow()
+	}
+}
+
+func testIntegerLiteral(t *testing.T, expr ast.Expression, value int64) {
+	require.IsType(t, new(ast.IntegerLiteral), expr)
+	integerLiteral := expr.(*ast.IntegerLiteral)
+
+	require.Equal(t, value, integerLiteral.Value)
+	require.Equal(t, fmt.Sprint(value), integerLiteral.TokenLiteral())
+}
+
+func testBooleanLiteral(t *testing.T, expr ast.Expression, value bool) {
+	require.IsType(t, new(ast.Boolean), expr)
+	b := expr.(*ast.Boolean)
+	require.Equal(t, value, b.Value)
+	require.Equal(t, fmt.Sprintf("%t", value), b.TokenLiteral())
+}
+
+func testLiteralExpression(t *testing.T, expr ast.Expression, expected interface{}) {
+	switch v := expected.(type) {
+	case int:
+		testIntegerLiteral(t, expr, int64(v))
+	case int32:
+		testIntegerLiteral(t, expr, int64(v))
+	case int64:
+		testIntegerLiteral(t, expr, int64(v))
+	case string:
+		testIdentifier(t, expr, v)
+	case bool:
+		testBooleanLiteral(t, expr, v)
+	default:
+		require.Failf(t, "Unknown expectation type", "Unknown expectation type '%T'", expected)
+	}
+}
+
+func testInfixExpression(t *testing.T, expr ast.Expression, left interface{}, operator string, right interface{}) {
+	require.IsType(t, new(ast.InfixExpression), expr)
+	ie := expr.(*ast.InfixExpression)
+	testLiteralExpression(t, ie.Left, left)
+	require.Equal(t, operator, ie.Operator)
+	testLiteralExpression(t, ie.Right, right)
 }
