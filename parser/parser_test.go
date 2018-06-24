@@ -114,6 +114,7 @@ func TestPrefixExpressions(t *testing.T) {
 		{"!5;", "!", 5},
 		{"-15;", "-", 15},
 		{"-b;", "-", "b"},
+		{"!true;", "!", true},
 		{"!false;", "!", false},
 	}
 
@@ -123,7 +124,7 @@ func TestPrefixExpressions(t *testing.T) {
 		program := p.ParseProgram()
 		checkParserErrors(t, p)
 
-		require.Equal(t, 1, len(program.Statements))
+		require.Len(t, program.Statements, 1)
 		require.IsType(t, new(ast.ExpressionStatement), program.Statements[0])
 
 		expr := program.Statements[0].(*ast.ExpressionStatement)
@@ -150,6 +151,9 @@ func TestInfixExpression(t *testing.T) {
 		{"5 == 5;", 5, "==", 5},
 		{"5 != 5;", 5, "!=", 5},
 		{"a > b;", "a", ">", "b"},
+		{"true == true;", true, "==", true},
+		{"false == false;", false, "==", false},
+		{"true != false;", true, "!=", false},
 	}
 
 	for _, tt := range infixTests {
@@ -159,7 +163,7 @@ func TestInfixExpression(t *testing.T) {
 		program := p.ParseProgram()
 		checkParserErrors(t, p)
 
-		require.Equal(t, 1, len(program.Statements))
+		require.Len(t, program.Statements, 1)
 		require.IsType(t, new(ast.ExpressionStatement), program.Statements[0])
 
 		stmt := program.Statements[0].(*ast.ExpressionStatement)
@@ -214,6 +218,123 @@ func TestOperatorPrecedence(t *testing.T) {
 		require.Equal(t, tt.expected, prog.String())
 	}
 }
+
+func TestIfExpression(t *testing.T) {
+	input := `if (x < y) { x }`
+
+	l := lexer.New(input)
+	p := parser.New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	require.Len(t, program.Statements, 1)
+
+	require.IsType(t, new(ast.ExpressionStatement), program.Statements[0])
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+
+	require.IsType(t, new(ast.IfExpression), stmt.Expression)
+	ifexp := stmt.Expression.(*ast.IfExpression)
+
+	testInfixExpression(t, ifexp.Condition, "x", "<", "y")
+	require.Len(t, ifexp.Consequence.Statements, 1)
+
+	require.IsType(t, new(ast.ExpressionStatement), ifexp.Consequence.Statements[0])
+	cons := ifexp.Consequence.Statements[0].(*ast.ExpressionStatement)
+	testIdentifier(t, cons.Expression, "x")
+	require.Nil(t, ifexp.Alternative)
+}
+
+func TestIfElseExpression(t *testing.T) {
+	input := `if (x < y) { x } else { y }`
+
+	l := lexer.New(input)
+	p := parser.New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	require.Len(t, program.Statements, 1)
+
+	require.IsType(t, new(ast.ExpressionStatement), program.Statements[0])
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+
+	require.IsType(t, new(ast.IfExpression), stmt.Expression)
+	ifexp := stmt.Expression.(*ast.IfExpression)
+
+	testInfixExpression(t, ifexp.Condition, "x", "<", "y")
+	require.Len(t, ifexp.Consequence.Statements, 1)
+
+	require.IsType(t, new(ast.ExpressionStatement), ifexp.Consequence.Statements[0])
+	cons := ifexp.Consequence.Statements[0].(*ast.ExpressionStatement)
+	testIdentifier(t, cons.Expression, "x")
+
+	require.NotNil(t, ifexp.Alternative)
+	require.Len(t, ifexp.Alternative.Statements, 1)
+}
+
+func TestFunctionLiteral(t *testing.T) {
+	input := `fn(x, y) { x + y; }`
+
+	l := lexer.New(input)
+	p := parser.New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	require.Len(t, program.Statements, 1)
+
+	require.IsType(t, new(ast.ExpressionStatement), program.Statements[0])
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+
+	require.IsType(t, new(ast.FunctionLiteral), stmt.Expression)
+	fn := stmt.Expression.(*ast.FunctionLiteral)
+
+	require.Len(t, fn.Parameters, 2)
+
+	testLiteralExpression(t, fn.Parameters[0], "x")
+	testLiteralExpression(t, fn.Parameters[1], "y")
+
+	require.Len(t, fn.Body.Statements, 1)
+
+	require.IsType(t, new(ast.ExpressionStatement), fn.Body.Statements[0])
+	bstmt := fn.Body.Statements[0].(*ast.ExpressionStatement)
+
+	testInfixExpression(t, bstmt.Expression, "x", "+", "y")
+}
+
+func TestFunctionParameters(t *testing.T) {
+	tests := []struct {
+		input          string
+		expectedParams []string
+	}{
+		{input: "fn(){};", expectedParams: []string{}},
+		{input: "fn(x){};", expectedParams: []string{"x"}},
+		{input: "fn(x,y,z){};", expectedParams: []string{"x", "y", "z"}},
+	}
+
+	for _, tt := range tests {
+		l := lexer.New(tt.input)
+		p := parser.New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		require.Len(t, program.Statements, 1)
+
+		require.IsType(t, new(ast.ExpressionStatement), program.Statements[0])
+		stmt := program.Statements[0].(*ast.ExpressionStatement)
+
+		require.IsType(t, new(ast.FunctionLiteral), stmt.Expression)
+		fn := stmt.Expression.(*ast.FunctionLiteral)
+
+		require.Len(t, fn.Parameters, len(tt.expectedParams))
+
+		for i, p := range tt.expectedParams {
+			testLiteralExpression(t, fn.Parameters[i], p)
+		}
+
+		require.Len(t, fn.Body.Statements, 0)
+	}
+}
+
+// Helper functions
 
 func testIdentifier(t *testing.T, expr ast.Expression, value string) {
 	require.IsType(t, new(ast.Identifier), expr)
