@@ -1,7 +1,10 @@
 package parser_test
 
 import (
+	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 
 	"git.exsdev.ru/ExS/gop/ast"
 	"git.exsdev.ru/ExS/gop/lexer"
@@ -20,23 +23,11 @@ func TestLetStatements(t *testing.T) {
 	p := parser.New(l)
 
 	program := p.ParseProgram()
-	errors := p.Errors()
-	if len(errors) > 0 {
-		t.Errorf("%d parser errors:", len(errors))
-		for _, e := range p.Errors() {
-			t.Error(e)
-		}
+	checkParserErrors(t, p)
 
-		t.FailNow()
-	}
+	require.NotNil(t, program)
 
-	if program == nil {
-		t.Fatal("program is nil")
-	}
-
-	if len(program.Statements) != 3 {
-		t.Fatal("program should have 3 statements")
-	}
+	assert.Equal(t, 3, len(program.Statements))
 
 	tests := []string{"x", "y", "foobar"}
 
@@ -46,26 +37,22 @@ func TestLetStatements(t *testing.T) {
 	}
 }
 
-func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
-	if !assert.Equal(t, s.TokenLiteral(), "let") {
-		return false
-	}
-
-	if !assert.IsType(t, new(ast.LetStatement), s) {
-		return false
-	}
-
+func testLetStatement(t *testing.T, s ast.Statement, name string) {
+	require.Equal(t, s.TokenLiteral(), "let")
+	require.IsType(t, new(ast.LetStatement), s)
 	let := s.(*ast.LetStatement)
+	require.Equal(t, name, let.Name.Value)
+	require.Equal(t, name, let.Name.TokenLiteral())
+}
 
-	if !assert.Equal(t, let.Name.Value, name) {
-		return false
+func checkParserErrors(t *testing.T, p *parser.Parser) {
+	if !assert.Empty(t, p.Errors()) {
+		for _, e := range p.Errors() {
+			t.Error(e)
+		}
+
+		t.FailNow()
 	}
-
-	if !assert.Equal(t, let.Name.TokenLiteral(), name) {
-		return false
-	}
-
-	return true
 }
 
 func TestReturnStatements(t *testing.T) {
@@ -79,24 +66,115 @@ func TestReturnStatements(t *testing.T) {
 	p := parser.New(l)
 
 	program := p.ParseProgram()
-	errors := p.Errors()
+	checkParserErrors(t, p)
 
-	if !assert.Equal(t, len(errors), 0) {
-		for _, e := range p.Errors() {
-			t.Error(e)
-		}
+	require.NotNil(t, program)
 
-		t.FailNow()
-	}
-
-	if program == nil {
-		t.Fatal("program is nil")
-	}
-
-	assert.Equal(t, len(program.Statements), 3, "program should have 3 statements")
+	assert.Equal(t, 3, len(program.Statements), "program should have 3 statements")
 
 	for _, stmt := range program.Statements {
 		assert.Equal(t, stmt.TokenLiteral(), "return")
 		assert.IsType(t, new(ast.ReturnStatement), stmt)
 	}
+}
+
+func TestIdentifierExpression(t *testing.T) {
+	input := "foobar;"
+
+	l := lexer.New(input)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	require.NotNil(t, program)
+
+	assert.Equal(t, 1, len(program.Statements), "program should have 1 statement")
+
+	for _, stmt := range program.Statements {
+		require.IsType(t, new(ast.ExpressionStatement), stmt)
+
+		expr := stmt.(*ast.ExpressionStatement)
+		require.IsType(t, new(ast.Identifier), expr.Expression)
+
+		ident := expr.Expression.(*ast.Identifier)
+		require.Equal(t, ident.Value, "foobar")
+		require.Equal(t, ident.TokenLiteral(), "foobar")
+	}
+}
+
+func TestIntegerLiteralExpression(t *testing.T) {
+	input := "5;"
+
+	l := lexer.New(input)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	require.NotNil(t, program)
+
+	assert.Equal(t, 1, len(program.Statements), "program should have 1 statement")
+
+	for _, stmt := range program.Statements {
+		require.IsType(t, new(ast.ExpressionStatement), stmt)
+
+		expr := stmt.(*ast.ExpressionStatement)
+		require.IsType(t, new(ast.IntegerLiteral), expr.Expression)
+
+		integer := expr.Expression.(*ast.IntegerLiteral)
+		require.Equal(t, integer.Value, int64(5))
+		require.Equal(t, integer.TokenLiteral(), "5")
+	}
+}
+
+func TestPrefixExpressions(t *testing.T) {
+	prefixTests := []struct {
+		input        string
+		operator     string
+		integerValue int64
+	}{
+		{"!5;", "!", 5},
+		{"-15;", "-", 15},
+	}
+
+	for _, tt := range prefixTests {
+		l := lexer.New(tt.input)
+		p := parser.New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		require.Equal(t, 1, len(program.Statements))
+		require.IsType(t, new(ast.ExpressionStatement), program.Statements[0])
+
+		expr := program.Statements[0].(*ast.ExpressionStatement)
+
+		require.IsType(t, new(ast.PrefixExpression), expr.Expression)
+		prefix := expr.Expression.(*ast.PrefixExpression)
+
+		require.IsType(t, new(ast.IntegerLiteral), prefix.Right)
+		integerLiteral := prefix.Right.(*ast.IntegerLiteral)
+
+		require.Equal(t, tt.integerValue, integerLiteral.Value)
+		require.Equal(t, fmt.Sprint(tt.integerValue), integerLiteral.TokenLiteral())
+	}
+}
+
+func TestInfixExpression(t *testing.T) {
+	infixTests := []struct {
+		input    string
+		left     int64
+		operator string
+		right    int64
+	}{
+		{"5 + 5;", 5, "+", 5},
+		{"5 - 5;", 5, "-", 5},
+		{"5 * 5;", 5, "*", 5},
+		{"5 / 5;", 5, "/", 5},
+		{"5 < 5;", 5, "<", 5},
+		{"5 > 5;", 5, ">", 5},
+		{"5 == 5;", 5, "==", 5},
+		{"5 != 5;", 5, "!=", 5},
+	}
+
 }

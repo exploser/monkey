@@ -1,8 +1,6 @@
 package ast
 
 import (
-	"fmt"
-
 	"git.exsdev.ru/ExS/gop/token"
 )
 
@@ -20,5 +18,5 @@ func (l *ExpressionStatement) TokenLiteral() string {
 }
 
 func (l *ExpressionStatement) String() string {
-	return fmt.Sprintf("%v %v", l.Token.Literal, l.Expression)
+	return l.Expression.String()
 }
