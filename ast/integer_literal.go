@@ -1,6 +1,6 @@
 package ast
 
-import "git.exsdev.ru/ExS/gop/token"
+import "git.exsdev.ru/ExS/monkey/token"
 
 var _ Expression = new(IntegerLiteral)
 

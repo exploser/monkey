@@ -3,7 +3,7 @@ package ast
 import (
 	"fmt"
 
-	"git.exsdev.ru/ExS/gop/token"
+	"git.exsdev.ru/ExS/monkey/token"
 )
 
 var _ Statement = new(LetStatement)

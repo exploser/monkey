@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"git.exsdev.ru/ExS/gop/token"
+	"git.exsdev.ru/ExS/monkey/token"
 )
 
 type Lexer struct {

@@ -5,9 +5,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"git.exsdev.ru/ExS/gop/ast"
-	"git.exsdev.ru/ExS/gop/lexer"
-	"git.exsdev.ru/ExS/gop/token"
+	"git.exsdev.ru/ExS/monkey/ast"
+	"git.exsdev.ru/ExS/monkey/lexer"
+	"git.exsdev.ru/ExS/monkey/token"
 )
 
 type prefixParseFn func() ast.Expression

@@ -3,8 +3,8 @@ package parser_test
 import (
 	"testing"
 
-	"git.exsdev.ru/ExS/gop/lexer"
-	"git.exsdev.ru/ExS/gop/parser"
+	"git.exsdev.ru/ExS/monkey/lexer"
+	"git.exsdev.ru/ExS/monkey/parser"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

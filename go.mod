@@ -1,4 +1,4 @@
-module git.exsdev.ru/ExS/gop
+module git.exsdev.ru/ExS/monkey
 
 require (
 	github.com/pkg/errors v0.8.0

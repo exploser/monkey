@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"git.exsdev.ru/ExS/gop/token"
+	"git.exsdev.ru/ExS/monkey/token"
 )
 
 var _ Expression = new(FunctionLiteral)

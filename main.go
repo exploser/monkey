@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"git.exsdev.ru/ExS/gop/repl"
+	"git.exsdev.ru/ExS/monkey/repl"
 )
 
 func main() {

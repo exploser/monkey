@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"git.exsdev.ru/ExS/gop/ast"
-	"git.exsdev.ru/ExS/gop/lexer"
-	"git.exsdev.ru/ExS/gop/parser"
+	"git.exsdev.ru/ExS/monkey/ast"
+	"git.exsdev.ru/ExS/monkey/lexer"
+	"git.exsdev.ru/ExS/monkey/parser"
 	"github.com/stretchr/testify/assert"
 )
 

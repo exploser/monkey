@@ -3,8 +3,8 @@ package lexer_test
 import (
 	"testing"
 
-	. "git.exsdev.ru/ExS/gop/lexer"
-	"git.exsdev.ru/ExS/gop/token"
+	. "git.exsdev.ru/ExS/monkey/lexer"
+	"git.exsdev.ru/ExS/monkey/token"
 	"github.com/stretchr/testify/assert"
 )
 

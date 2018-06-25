@@ -3,8 +3,8 @@ package ast_test
 import (
 	"testing"
 
-	. "git.exsdev.ru/ExS/gop/ast"
-	"git.exsdev.ru/ExS/gop/token"
+	. "git.exsdev.ru/ExS/monkey/ast"
+	"git.exsdev.ru/ExS/monkey/token"
 	"github.com/stretchr/testify/assert"
 )
 
