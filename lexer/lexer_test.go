@@ -25,6 +25,8 @@ func TestNextToken(t *testing.T) {
 	if (5 == 10) {
 		return 5 != 10;
 	}
+	"foobar"
+	"foo bar"
 	`
 
 	tests := []token.Token{
@@ -120,6 +122,12 @@ func TestNextToken(t *testing.T) {
 		{token.Semicolon, ";"},
 
 		{token.RBrace, "}"},
+
+		{token.String, "foobar"},
+
+		{token.String, "foo bar"},
+
+		{token.EOF, "\x00"},
 	}
 
 	l := New(input)

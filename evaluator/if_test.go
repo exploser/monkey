@@ -11,7 +11,7 @@ func TestIf(t *testing.T) {
 		{"if (false) { 10 }", nil},
 		{"if (1) { 10 }", 10},
 		{"if (1<2) { 10 }", 10},
-		{"if (nil) { 10 }", nil},
+		// {"if (nil) { 10 }", nil},
 	}
 
 	for _, tt := range tests {

@@ -13,6 +13,24 @@ var (
 	NilValue  = &types.Nil{}
 )
 
+func GetBaseEnvironment() *types.Environment {
+	env := types.NewEnvironment()
+	env.Set("len", &types.Builtin{Fn: func(args ...types.Object) types.Object {
+		if len(args) != 1 {
+			return &types.Error{fmt.Errorf("expected 1 argument, got %d", len(args))}
+		}
+
+		switch arg := args[0].(type) {
+		case *types.String:
+			return &types.Integer{Value: int64(len(arg.Value))}
+		default:
+			return &types.Error{fmt.Errorf("operator len not defined for %s", arg.Type())}
+		}
+	}})
+
+	return env
+}
+
 func Eval(node ast.Node, env *types.Environment) types.Object {
 	switch node := node.(type) {
 	case *ast.Program:
@@ -23,6 +41,8 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 		return evalBooleanExpression(node.Value)
 	case *ast.IntegerLiteral:
 		return &types.Integer{Value: node.Value}
+	case *ast.StringLiteral:
+		return &types.String{Value: node.Value}
 
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, env)
@@ -62,6 +82,24 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
+
+	case *ast.FunctionLiteral:
+		params := node.Parameters
+		body := node.Body
+		return &types.Function{Parameters: params, Env: env, Body: body}
+
+	case *ast.CallExpression:
+		function := Eval(node.Function, env)
+		if isError(function) {
+			return function
+		}
+
+		args := evalExpressions(node.Arguments, env)
+		if len(args) == 1 && isError(args[0]) {
+			return args[0]
+		}
+
+		return applyFunction(function, args)
 
 	default:
 		return NilValue
@@ -143,6 +181,8 @@ func evalInfixExpression(left types.Object, operator string, right types.Object)
 	switch {
 	case left.Type() == types.IntegerT && right.Type() == types.IntegerT:
 		return evalIntegerInfixExpression(left, operator, right)
+	case left.Type() == types.StringT && right.Type() == types.StringT:
+		return evalStringInfixExpression(left, operator, right)
 
 	default:
 		return &types.Error{fmt.Errorf("operator %q not defined for (%s, %s)", operator, left.Type(), right.Type())}
@@ -177,6 +217,17 @@ func evalIntegerInfixExpression(left types.Object, operator string, right types.
 	}
 }
 
+func evalStringInfixExpression(left types.Object, operator string, right types.Object) types.Object {
+	leftVal := left.(*types.String).Value
+	rightVal := right.(*types.String).Value
+	switch operator {
+	case "+":
+		return &types.String{Value: leftVal + rightVal}
+	default:
+		return &types.Error{fmt.Errorf("unknown infix operator %q", operator)}
+	}
+}
+
 func evalIfExpression(node *ast.IfExpression, env *types.Environment) types.Object {
 	condition := Eval(node.Condition, env)
 
@@ -202,6 +253,49 @@ func evalIdentifier(node *ast.Identifier, env *types.Environment) types.Object {
 	}
 
 	return val
+}
+
+func evalExpressions(exps []ast.Expression, env *types.Environment) []types.Object {
+	result := make([]types.Object, len(exps))
+
+	for k, v := range exps {
+		result[k] = Eval(v, env)
+		if isError(result[k]) {
+			return []types.Object{result[k]}
+		}
+	}
+
+	return result
+}
+
+func applyFunction(fn types.Object, args []types.Object) types.Object {
+	switch function := fn.(type) {
+	case *types.Function:
+		extendedEnv := extendFunctionEnv(function, args)
+		evaluated := Eval(function.Body, extendedEnv)
+		return unwrapReturnValue(evaluated)
+	case *types.Builtin:
+		return function.Fn(args...)
+	default:
+		return &types.Error{fmt.Errorf("not a function: %s", fn.Type())}
+	}
+}
+
+func extendFunctionEnv(fn *types.Function, args []types.Object) *types.Environment {
+	env := types.NewEnclosedEnvironment(fn.Env)
+	for k, v := range fn.Parameters {
+		env.Set(v.Value, args[k])
+	}
+
+	return env
+}
+
+func unwrapReturnValue(obj types.Object) types.Object {
+	if ret, ok := obj.(*types.Return); ok {
+		return ret.Value
+	}
+
+	return obj
 }
 
 func isTruthy(obj types.Object) bool {

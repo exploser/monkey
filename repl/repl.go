@@ -6,7 +6,6 @@ import (
 	"io"
 
 	"git.exsdev.ru/ExS/monkey/evaluator"
-	"git.exsdev.ru/ExS/monkey/types"
 
 	"git.exsdev.ru/ExS/monkey/lexer"
 	"git.exsdev.ru/ExS/monkey/parser"
@@ -15,6 +14,7 @@ import (
 const prompt = "=> "
 
 func Start(in io.Reader, out io.Writer) {
+	env := evaluator.GetBaseEnvironment()
 	for {
 		fmt.Print(prompt)
 		scanner := bufio.NewScanner(in)
@@ -31,8 +31,6 @@ func Start(in io.Reader, out io.Writer) {
 		for _, e := range p.Errors() {
 			fmt.Println(e)
 		}
-
-		env := types.NewEnvironment()
 
 		evaluated := evaluator.Eval(prog, env)
 		if evaluated == nil {

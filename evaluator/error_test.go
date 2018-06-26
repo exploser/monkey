@@ -10,6 +10,7 @@ func TestError(t *testing.T) {
 		{"5 + true; 5"},
 		{"if (true) { if (true) { return 10+true; } } return 1;"},
 		{"asdfg"},
+		{`"asd" - "d"`},
 	}
 
 	for _, tt := range tests {

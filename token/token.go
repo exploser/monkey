@@ -10,8 +10,9 @@ const (
 	Illegal = "Illegal"
 	EOF     = "EOF"
 
-	Ident = "Ident"
-	Int   = "Int"
+	Ident  = "Ident"
+	Int    = "Int"
+	String = "String"
 
 	Assign   = "Assign"
 	Plus     = "Plus"
