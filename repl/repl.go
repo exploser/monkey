@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io"
 
+	"git.exsdev.ru/ExS/monkey/evaluator"
+	"git.exsdev.ru/ExS/monkey/types"
+
 	"git.exsdev.ru/ExS/monkey/lexer"
 	"git.exsdev.ru/ExS/monkey/parser"
 )
@@ -24,6 +27,19 @@ func Start(in io.Reader, out io.Writer) {
 		l := lexer.New(line)
 		p := parser.New(l)
 
-		fmt.Println(p.ParseProgram())
+		prog := p.ParseProgram()
+		for _, e := range p.Errors() {
+			fmt.Println(e)
+		}
+
+		env := types.NewEnvironment()
+
+		evaluated := evaluator.Eval(prog, env)
+		if evaluated == nil {
+			fmt.Println("eval: (nil)")
+			continue
+		}
+
+		fmt.Println(evaluated)
 	}
 }

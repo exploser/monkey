@@ -82,6 +82,8 @@ func New(l *lexer.Lexer) *Parser {
 
 	p.registerPrefix(token.Function, p.parseFunctionLiteral)
 
+	p.registerInfix(token.LParen, p.parseCallExpression)
+
 	return p
 }
 
@@ -135,8 +137,11 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		return nil
 	}
 
-	// TODO: not implemented
-	for p.curToken.Type != token.Semicolon {
+	p.nextToken()
+
+	stmt.Value = p.parseExpression(lowest)
+
+	if p.peekToken.Type == token.Semicolon {
 		p.nextToken()
 	}
 
@@ -147,8 +152,9 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	stmt := ast.ReturnStatement{Token: p.curToken}
 	p.nextToken()
 
-	// TODO: not implemented
-	for p.curToken.Type != token.Semicolon {
+	stmt.ReturnValue = p.parseExpression(lowest)
+
+	if p.peekToken.Type == token.Semicolon {
 		p.nextToken()
 	}
 
@@ -345,6 +351,38 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 	}
 
 	return identifiers
+}
+
+func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
+	exp := ast.CallExpression{Token: p.curToken, Function: function}
+	exp.Arguments = p.parseCallArguments()
+	return &exp
+}
+
+func (p *Parser) parseCallArguments() []ast.Expression {
+	expressions := make([]ast.Expression, 0)
+
+	if p.peekToken.Type == token.RParen {
+		p.nextToken()
+		return nil
+	}
+
+	p.nextToken()
+
+	expressions = append(expressions, p.parseExpression(lowest))
+
+	for p.peekToken.Type == token.Comma {
+		p.nextToken()
+		p.nextToken()
+
+		expressions = append(expressions, p.parseExpression(lowest))
+	}
+
+	if !p.expectPeek(token.RParen) {
+		return nil
+	}
+
+	return expressions
 }
 
 func (p *Parser) expectPeek(expect token.TokenType) bool {
