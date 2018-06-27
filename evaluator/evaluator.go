@@ -43,6 +43,12 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 		return &types.Integer{Value: node.Value}
 	case *ast.StringLiteral:
 		return &types.String{Value: node.Value}
+	case *ast.ArrayLiteral:
+		elems := evalExpressions(node.Elements, env)
+		if len(elems) == 1 && isError(elems[0]) {
+			return elems[0]
+		}
+		return &types.Array{Elements: elems}
 
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, env)
@@ -71,14 +77,15 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 		}
 		return &types.Return{Value: right}
 	case *ast.LetStatement:
+		if node == nil {
+			return NilValue
+		}
 		right := Eval(node.Value, env)
 		if isError(right) {
 			return right
 		}
 
 		env.Set(node.Name.Value, right)
-
-		return right
 
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
@@ -99,11 +106,10 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 			return args[0]
 		}
 
-		return applyFunction(function, args)
-
-	default:
-		return NilValue
+		return applyFunction(function, args, node.Token.Literal)
 	}
+
+	return NilValue
 }
 
 func evalProgram(stmts []ast.Statement, env *types.Environment) types.Object {
@@ -183,10 +189,10 @@ func evalInfixExpression(left types.Object, operator string, right types.Object)
 		return evalIntegerInfixExpression(left, operator, right)
 	case left.Type() == types.StringT && right.Type() == types.StringT:
 		return evalStringInfixExpression(left, operator, right)
-
 	default:
-		return &types.Error{fmt.Errorf("operator %q not defined for (%s, %s)", operator, left.Type(), right.Type())}
+		return errorf("operator %q not defined for (%s, %s)", operator, left.Type(), right.Type())
 	}
+
 }
 
 func evalIntegerInfixExpression(left types.Object, operator string, right types.Object) types.Object {
@@ -268,16 +274,19 @@ func evalExpressions(exps []ast.Expression, env *types.Environment) []types.Obje
 	return result
 }
 
-func applyFunction(fn types.Object, args []types.Object) types.Object {
+func applyFunction(fn types.Object, args []types.Object, literal string) types.Object {
 	switch function := fn.(type) {
 	case *types.Function:
+		if len(args) != len(function.Parameters) {
+			return errorf("%s: expected %d args, got %d", literal, len(function.Parameters), len(args))
+		}
 		extendedEnv := extendFunctionEnv(function, args)
 		evaluated := Eval(function.Body, extendedEnv)
 		return unwrapReturnValue(evaluated)
 	case *types.Builtin:
 		return function.Fn(args...)
 	default:
-		return &types.Error{fmt.Errorf("not a function: %s", fn.Type())}
+		return errorf("not a function: %s", fn.Type())
 	}
 }
 
@@ -304,6 +313,11 @@ func isTruthy(obj types.Object) bool {
 		return false
 
 	default:
+		switch obj := obj.(type) {
+		case *types.Integer:
+			return obj.Value != 0
+		}
+
 		return true
 	}
 }
@@ -311,4 +325,8 @@ func isTruthy(obj types.Object) bool {
 func isError(obj types.Object) bool {
 	_, ok := obj.(*types.Error)
 	return ok
+}
+
+func errorf(format string, args ...interface{}) *types.Error {
+	return &types.Error{fmt.Errorf(format, args...)}
 }

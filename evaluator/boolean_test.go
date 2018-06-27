@@ -7,7 +7,7 @@ func TestBoolean(t *testing.T) {
 		input    string
 		expected bool
 	}{
-		{"!(5+5)", false},
+		{"!(5-5)", true},
 		{"!!10", true},
 		{"!true", false},
 		{"!!true", true},

@@ -42,6 +42,9 @@ const (
 	If       = "If"
 	Else     = "Else"
 	Return   = "Return"
+
+	LBracket = "LBracket"
+	RBracket = "LBracket"
 )
 
 func LookupIdent(ident string) TokenType {

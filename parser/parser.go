@@ -85,6 +85,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.LParen, p.parseCallExpression)
 
 	p.registerPrefix(token.String, p.parseStringLiteral)
+
+	p.registerPrefix(token.LBracket, p.parseArrayExpression)
 	return p
 }
 
@@ -298,7 +300,7 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 
 	p.nextToken()
 
-	for p.curToken.Type != token.RBrace {
+	for p.curToken.Type != token.RBrace && p.curToken.Type != token.EOF {
 		if stmt := p.parseStatement(); stmt != nil {
 			block.Statements = append(block.Statements, stmt)
 		}
@@ -356,14 +358,20 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 
 func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
 	exp := ast.CallExpression{Token: p.curToken, Function: function}
-	exp.Arguments = p.parseCallArguments()
+	exp.Arguments = p.parseExpressionList(token.RParen)
 	return &exp
 }
 
-func (p *Parser) parseCallArguments() []ast.Expression {
+func (p *Parser) parseArrayExpression() ast.Expression {
+	exp := ast.ArrayLiteral{Token: p.curToken}
+	exp.Elements = p.parseExpressionList(token.RBracket)
+	return &exp
+}
+
+func (p *Parser) parseExpressionList(end token.TokenType) []ast.Expression {
 	expressions := make([]ast.Expression, 0)
 
-	if p.peekToken.Type == token.RParen {
+	if p.peekToken.Type == end {
 		p.nextToken()
 		return nil
 	}
@@ -379,7 +387,7 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 		expressions = append(expressions, p.parseExpression(lowest))
 	}
 
-	if !p.expectPeek(token.RParen) {
+	if !p.expectPeek(end) {
 		return nil
 	}
 
