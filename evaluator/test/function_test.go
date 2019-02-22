@@ -3,8 +3,9 @@ package evaluator_test
 import (
 	"testing"
 
-	"git.exsdev.ru/ExS/monkey/types"
 	"github.com/stretchr/testify/require"
+
+	"git.exsdev.ru/ExS/monkey/types"
 )
 
 func TestFunction(t *testing.T) {

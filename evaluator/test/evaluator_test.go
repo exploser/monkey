@@ -3,11 +3,12 @@ package evaluator_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"git.exsdev.ru/ExS/monkey/evaluator"
 	"git.exsdev.ru/ExS/monkey/lexer"
 	"git.exsdev.ru/ExS/monkey/parser"
 	"git.exsdev.ru/ExS/monkey/types"
-	"github.com/stretchr/testify/require"
 )
 
 func testEval(input string) types.Object {

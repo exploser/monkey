@@ -3,10 +3,11 @@ package parser_test
 import (
 	"testing"
 
-	"git.exsdev.ru/ExS/monkey/lexer"
-	"git.exsdev.ru/ExS/monkey/parser"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"git.exsdev.ru/ExS/monkey/lexer"
+	"git.exsdev.ru/ExS/monkey/parser"
 )
 
 func TestLetStatements(t *testing.T) {

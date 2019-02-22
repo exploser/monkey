@@ -17,14 +17,14 @@ func GetBaseEnvironment() *types.Environment {
 	env := types.NewEnvironment()
 	env.Set("len", &types.Builtin{Fn: func(args ...types.Object) types.Object {
 		if len(args) != 1 {
-			return &types.Error{fmt.Errorf("expected 1 argument, got %d", len(args))}
+			return errorf("expected 1 argument, got %d", len(args))
 		}
 
 		switch arg := args[0].(type) {
 		case *types.String:
 			return &types.Integer{Value: int64(len(arg.Value))}
 		default:
-			return &types.Error{fmt.Errorf("operator len not defined for %s", arg.Type())}
+			return errorf("operator len not defined for %s", arg.Type())
 		}
 	}})
 
@@ -162,7 +162,7 @@ func evalPrefixExpression(operator string, value types.Object) types.Object {
 		return evalMinusOperatorExpression(value)
 
 	default:
-		return &types.Error{fmt.Errorf("unknown prefix operator %q", operator)}
+		return errorf("unknown prefix operator %q", operator)
 	}
 }
 
@@ -176,7 +176,7 @@ func evalBangOperatorExpression(right types.Object) types.Object {
 
 func evalMinusOperatorExpression(right types.Object) types.Object {
 	if right.Type() != types.IntegerT {
-		return &types.Error{fmt.Errorf("operator \"-\" not defined for %s", right.Type())}
+		return errorf("operator \"-\" not defined for %s", right.Type())
 	}
 
 	value := right.(*types.Integer)
@@ -219,7 +219,7 @@ func evalIntegerInfixExpression(left types.Object, operator string, right types.
 		return evalBooleanExpression(leftVal != rightVal)
 
 	default:
-		return &types.Error{fmt.Errorf("unknown infix operator %q", operator)}
+		return errorf("unknown infix operator %q", operator)
 	}
 }
 
@@ -230,7 +230,7 @@ func evalStringInfixExpression(left types.Object, operator string, right types.O
 	case "+":
 		return &types.String{Value: leftVal + rightVal}
 	default:
-		return &types.Error{fmt.Errorf("unknown infix operator %q", operator)}
+		return errorf("unknown infix operator %q", operator)
 	}
 }
 
@@ -255,7 +255,7 @@ func evalIfExpression(node *ast.IfExpression, env *types.Environment) types.Obje
 func evalIdentifier(node *ast.Identifier, env *types.Environment) types.Object {
 	val, ok := env.Get(node.Value)
 	if !ok {
-		return &types.Error{fmt.Errorf("identifier not found: %q", node.Value)}
+		return errorf("identifier not found: %q", node.Value)
 	}
 
 	return val

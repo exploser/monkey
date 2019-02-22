@@ -6,10 +6,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/stretchr/testify/assert"
+
 	"git.exsdev.ru/ExS/monkey/ast"
 	"git.exsdev.ru/ExS/monkey/lexer"
 	"git.exsdev.ru/ExS/monkey/parser"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestOperatorPrecedence(t *testing.T) {

@@ -3,15 +3,16 @@ package parser_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"git.exsdev.ru/ExS/monkey/ast"
 	"git.exsdev.ru/ExS/monkey/lexer"
 	"git.exsdev.ru/ExS/monkey/parser"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
-func TestIntegerLiteralExpression(t *testing.T) {
-	input := "5;"
+func TestStringLiteralExpression(t *testing.T) {
+	input := `"hello world!";`
 
 	l := lexer.New(input)
 	p := parser.New(l)
@@ -27,10 +28,10 @@ func TestIntegerLiteralExpression(t *testing.T) {
 		require.IsType(t, new(ast.ExpressionStatement), stmt)
 
 		expr := stmt.(*ast.ExpressionStatement)
-		require.IsType(t, new(ast.IntegerLiteral), expr.Expression)
+		require.IsType(t, new(ast.StringLiteral), expr.Expression)
 
-		integer := expr.Expression.(*ast.IntegerLiteral)
-		require.Equal(t, integer.Value, int64(5))
-		require.Equal(t, integer.TokenLiteral(), "5")
+		str := expr.Expression.(*ast.StringLiteral)
+		require.Equal(t, str.Value, "hello world!")
+		require.Equal(t, str.TokenLiteral(), "hello world!")
 	}
 }

@@ -3,9 +3,10 @@ package lexer_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	. "git.exsdev.ru/ExS/monkey/lexer"
 	"git.exsdev.ru/ExS/monkey/token"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNextToken(t *testing.T) {

@@ -1,6 +1,7 @@
 module git.exsdev.ru/ExS/monkey
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/gopherjs/gopherjs v0.0.0-20180424202546-8dffc02ea1cb
 	github.com/gopherjs/vecty v0.0.0-20180525005238-a3bd138280bf
@@ -9,6 +10,7 @@ require (
 	github.com/neelance/astrewrite v0.0.0-20160511093645-99348263ae86
 	github.com/neelance/sourcemap v0.0.0-20151028013722-8c68805598ab
 	github.com/pkg/errors v0.8.0
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/russross/blackfriday v1.5.1
 	github.com/shurcooL/httpfs v0.0.0-20171119174359-809beceb2371
 	github.com/spf13/cobra v0.0.3

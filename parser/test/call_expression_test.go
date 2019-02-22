@@ -3,10 +3,11 @@ package parser_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"git.exsdev.ru/ExS/monkey/ast"
 	"git.exsdev.ru/ExS/monkey/lexer"
 	"git.exsdev.ru/ExS/monkey/parser"
-	"github.com/stretchr/testify/require"
 )
 
 func TestCallExpression(t *testing.T) {

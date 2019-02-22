@@ -3,9 +3,10 @@ package ast_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	. "git.exsdev.ru/ExS/monkey/ast"
 	"git.exsdev.ru/ExS/monkey/token"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestAstString(t *testing.T) {
