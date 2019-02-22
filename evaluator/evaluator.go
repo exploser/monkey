@@ -87,6 +87,14 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 
 		env.Set(node.Name.Value, right)
 
+	case *ast.Declare:
+		right := Eval(node.Value, env)
+		if isError(right) {
+			return right
+		}
+
+		env.Set(node.Name.Value, right)
+
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
 
@@ -192,7 +200,6 @@ func evalInfixExpression(left types.Object, operator string, right types.Object)
 	default:
 		return errorf("operator %q not defined for (%s, %s)", operator, left.Type(), right.Type())
 	}
-
 }
 
 func evalIntegerInfixExpression(left types.Object, operator string, right types.Object) types.Object {

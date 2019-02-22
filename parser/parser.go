@@ -17,6 +17,7 @@ type precedence int
 
 const (
 	lowest precedence = iota
+	assign
 	equals
 	lessgreater
 	sum
@@ -26,15 +27,16 @@ const (
 )
 
 var precedences = map[token.TokenType]precedence{
-	token.Equals:      equals,
-	token.NotEqual:    equals,
-	token.LessThan:    lessgreater,
-	token.GreaterThan: lessgreater,
-	token.Plus:        sum,
-	token.Minus:       sum,
-	token.Asterisk:    product,
-	token.Slash:       product,
-	token.LParen:      call,
+	token.Equals:        equals,
+	token.NotEqual:      equals,
+	token.LessThan:      lessgreater,
+	token.GreaterThan:   lessgreater,
+	token.Plus:          sum,
+	token.Minus:         sum,
+	token.Asterisk:      product,
+	token.Slash:         product,
+	token.LParen:        call,
+	token.DeclareAssign: assign,
 }
 
 type Parser struct {
@@ -67,6 +69,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.Minus, p.parseInfixExpression)
 	p.registerInfix(token.Asterisk, p.parseInfixExpression)
 	p.registerInfix(token.Slash, p.parseInfixExpression)
+
+	p.registerInfix(token.DeclareAssign, p.parseDeclareExpression)
 
 	p.registerInfix(token.Equals, p.parseInfixExpression)
 	p.registerInfix(token.NotEqual, p.parseInfixExpression)
@@ -149,6 +153,20 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	}
 
 	return &stmt
+}
+
+func (p *Parser) parseDeclareExpression(left ast.Expression) ast.Expression {
+	li := left.(*ast.Identifier)
+	declaration := ast.Declare{
+		Token: p.curToken,
+		Name:  li,
+	}
+
+	prec := p.curPrecedence()
+	p.nextToken()
+	declaration.Value = p.parseExpression(prec)
+
+	return &declaration
 }
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {

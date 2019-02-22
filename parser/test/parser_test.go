@@ -47,11 +47,19 @@ func testIdentifier(t *testing.T, expr ast.Expression, value string) {
 }
 
 func testLetStatement(t *testing.T, s ast.Statement, name string) {
-	require.Equal(t, s.TokenLiteral(), "let")
+	require.Equal(t, "let", s.TokenLiteral())
 	require.IsType(t, new(ast.LetStatement), s)
 	let := s.(*ast.LetStatement)
 	require.Equal(t, name, let.Name.Value)
 	require.Equal(t, name, let.Name.TokenLiteral())
+}
+
+func testDeclareAssign(t *testing.T, s ast.Expression, name string, value interface{}) {
+	require.IsType(t, new(ast.Declare), s)
+	decl := s.(*ast.Declare)
+	require.Equal(t, name, decl.Name.Value)
+	require.Equal(t, name, decl.Name.TokenLiteral())
+	testLiteralExpression(t, decl.Value, value)
 }
 
 func checkParserErrors(t *testing.T, p *parser.Parser) {

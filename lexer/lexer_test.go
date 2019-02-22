@@ -29,6 +29,7 @@ func TestNextToken(t *testing.T) {
 	"foobar"
 	"foo bar"
 	[1, 2];
+	a:=7
 	`
 
 	tests := []token.Token{
@@ -135,6 +136,10 @@ func TestNextToken(t *testing.T) {
 		{token.Int, "2"},
 		{token.RBracket, "]"},
 		{token.Semicolon, ";"},
+
+		{token.Ident, "a"},
+		{token.DeclareAssign, ":="},
+		{token.Int, "7"},
 
 		{token.EOF, "\x00"},
 	}

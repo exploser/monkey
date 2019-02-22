@@ -77,6 +77,14 @@ func (l *Lexer) NextToken() (tok token.Token) {
 			tok.Type = token.NotEqual
 			tok.Literal = string(c) + string(l.ch)
 		}
+	case ':':
+		tok.Type = token.Illegal
+		if l.peekChar() == '=' {
+			c := l.ch
+			l.readChar()
+			tok.Type = token.DeclareAssign
+			tok.Literal = string(c) + string(l.ch)
+		}
 	case '"':
 		tok.Type = token.String
 		tok.Literal = l.readString()
