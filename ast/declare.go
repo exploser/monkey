@@ -21,5 +21,5 @@ func (l *Declare) TokenLiteral() string {
 }
 
 func (l *Declare) String() string {
-	return fmt.Sprintf("%v %v = %v", l.Token.Literal, l.Name, l.Value)
+	return fmt.Sprintf("%v := %v", l.Name, l.Value)
 }

@@ -124,7 +124,7 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 			return args[0]
 		}
 
-		return applyFunction(function, args, node.Token.Literal)
+		return applyFunction(function, args, node.TokenLiteral())
 	}
 
 	return NilValue

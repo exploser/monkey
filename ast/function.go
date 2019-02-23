@@ -27,5 +27,5 @@ func (fl *FunctionLiteral) String() string {
 		params = append(params, p.String())
 	}
 
-	return fmt.Sprintf("%s (%s) %s", fl.TokenLiteral(), strings.Join(params, ", "), fl.Body)
+	return fmt.Sprintf("%s (%s) { %s}", fl.TokenLiteral(), strings.Join(params, ", "), fl.Body)
 }

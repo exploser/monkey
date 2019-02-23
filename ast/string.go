@@ -1,6 +1,10 @@
 package ast
 
-import "git.exsdev.ru/ExS/monkey/token"
+import (
+	"fmt"
+
+	"git.exsdev.ru/ExS/monkey/token"
+)
 
 var _ Expression = new(StringLiteral)
 
@@ -16,5 +20,5 @@ func (s *StringLiteral) TokenLiteral() string {
 }
 
 func (s *StringLiteral) String() string {
-	return s.Token.Literal
+	return fmt.Sprintf("%q", s.Token.Literal)
 }

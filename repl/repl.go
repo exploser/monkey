@@ -39,5 +39,6 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		fmt.Println(evaluated)
+		fmt.Println("input: ", prog.String())
 	}
 }

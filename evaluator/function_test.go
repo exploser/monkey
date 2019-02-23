@@ -16,7 +16,7 @@ func TestFunction(t *testing.T) {
 	fn := evaluated.(*types.Function)
 	require.Len(t, fn.Parameters, 1)
 	require.Equal(t, "x", fn.Parameters[0].String())
-	require.Equal(t, "[return (x + 2)]", fn.Body.String())
+	require.Equal(t, "return (x + 2); ", fn.Body.String())
 }
 
 func TestFunctionCall(t *testing.T) {

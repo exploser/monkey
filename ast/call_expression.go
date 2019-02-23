@@ -27,5 +27,5 @@ func (fl *CallExpression) String() string {
 		params = append(params, p.String())
 	}
 
-	return fmt.Sprintf("%s(%s)", fl.TokenLiteral(), strings.Join(params, ", "))
+	return fmt.Sprintf("%s(%s)", fl.Function.String(), strings.Join(params, ", "))
 }
