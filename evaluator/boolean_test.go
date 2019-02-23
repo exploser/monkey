@@ -12,6 +12,7 @@ func TestBoolean(t *testing.T) {
 		{"!true", false},
 		{"!!true", true},
 		{"1 < 2", true},
+		{"1 > 2", false},
 		{"1 == 2", false},
 		{"1 == (17 - 16)", true},
 		{"2 != (17 - 16)", true},
@@ -19,7 +20,7 @@ func TestBoolean(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(tt.input)
+		evaluated := testEval(t, tt.input)
 		testBooleanObject(t, tt.expected, evaluated, tt)
 	}
 }

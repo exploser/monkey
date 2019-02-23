@@ -90,9 +90,6 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 		return &types.Return{Value: right}
 
 	case *ast.LetStatement:
-		if node == nil {
-			return NilValue
-		}
 		right := Eval(node.Value, env)
 		if isError(right) {
 			return right

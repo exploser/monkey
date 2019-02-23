@@ -11,7 +11,7 @@ func TestArray(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(tt.input)
+		evaluated := testEval(t, tt.input)
 		testIntegerArrayObject(t, tt.expected, evaluated, tt)
 	}
 }

@@ -13,7 +13,7 @@ func TestReturn(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(tt.input)
+		evaluated := testEval(t, tt.input)
 		switch expected := tt.expected.(type) {
 		case int:
 			testIntegerObject(t, int64(expected), evaluated, tt)

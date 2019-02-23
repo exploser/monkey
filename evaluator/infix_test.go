@@ -14,7 +14,7 @@ func TestInfix(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(tt.input)
+		evaluated := testEval(t, tt.input)
 		testIntegerObject(t, tt.expected, evaluated, tt)
 	}
 }
