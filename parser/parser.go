@@ -62,35 +62,28 @@ func New(l *lexer.Lexer) *Parser {
 
 	p.registerPrefix(token.Ident, p.parseIdentifier)
 	p.registerPrefix(token.Int, p.parseIntegerLiteral)
+	p.registerPrefix(token.String, p.parseStringLiteral)
+	p.registerPrefix(token.Nil, p.parseNil)
 	p.registerPrefix(token.Bang, p.parsePrefixExpression)
 	p.registerPrefix(token.Minus, p.parsePrefixExpression)
+	p.registerPrefix(token.True, p.parseBoolean)
+	p.registerPrefix(token.False, p.parseBoolean)
+	p.registerPrefix(token.LParen, p.parseGroupedExpression)
+	p.registerPrefix(token.If, p.parseIfExpression)
+	p.registerPrefix(token.Function, p.parseFunctionLiteral)
+	p.registerPrefix(token.LBracket, p.parseArrayExpression)
 
 	p.registerInfix(token.Plus, p.parseInfixExpression)
 	p.registerInfix(token.Minus, p.parseInfixExpression)
 	p.registerInfix(token.Asterisk, p.parseInfixExpression)
 	p.registerInfix(token.Slash, p.parseInfixExpression)
-
 	p.registerInfix(token.DeclareAssign, p.parseDeclareExpression)
-
 	p.registerInfix(token.Equals, p.parseInfixExpression)
 	p.registerInfix(token.NotEqual, p.parseInfixExpression)
 	p.registerInfix(token.LessThan, p.parseInfixExpression)
 	p.registerInfix(token.GreaterThan, p.parseInfixExpression)
-
-	p.registerPrefix(token.True, p.parseBoolean)
-	p.registerPrefix(token.False, p.parseBoolean)
-
-	p.registerPrefix(token.LParen, p.parseGroupedExpression)
-
-	p.registerPrefix(token.If, p.parseIfExpression)
-
-	p.registerPrefix(token.Function, p.parseFunctionLiteral)
-
 	p.registerInfix(token.LParen, p.parseCallExpression)
 
-	p.registerPrefix(token.String, p.parseStringLiteral)
-
-	p.registerPrefix(token.LBracket, p.parseArrayExpression)
 	return p
 }
 
@@ -156,7 +149,11 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 }
 
 func (p *Parser) parseDeclareExpression(left ast.Expression) ast.Expression {
-	li := left.(*ast.Identifier)
+	li, ok := left.(*ast.Identifier)
+	if !ok {
+		return nil
+	}
+
 	declaration := ast.Declare{
 		Token: p.curToken,
 		Name:  li,
@@ -414,6 +411,10 @@ func (p *Parser) parseExpressionList(end token.TokenType) []ast.Expression {
 
 func (p *Parser) parseStringLiteral() ast.Expression {
 	return &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+}
+
+func (p *Parser) parseNil() ast.Expression {
+	return &ast.Nil{Token: p.curToken}
 }
 
 func (p *Parser) expectPeek(expect token.TokenType) bool {
