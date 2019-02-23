@@ -11,6 +11,7 @@ func TestError(t *testing.T) {
 		{"if (true) { if (true) { return 10+true; } } return 1;"},
 		{"asdfg"},
 		{`"asd" - "d"`},
+		{"/5"},
 	}
 
 	for _, tt := range tests {

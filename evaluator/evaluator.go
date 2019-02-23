@@ -67,6 +67,7 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 			return right
 		}
 		return evalPrefixExpression(node.Operator, right)
+
 	case *ast.InfixExpression:
 		left := Eval(node.Left, env)
 		if isError(left) {
