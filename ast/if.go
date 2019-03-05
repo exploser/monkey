@@ -22,9 +22,9 @@ func (ie *IfExpression) TokenLiteral() string {
 }
 
 func (ie *IfExpression) String() string {
-	res := fmt.Sprintf("if %s %s", ie.Condition, ie.Consequence)
+	res := fmt.Sprintf("if (%s) { %s}", ie.Condition, ie.Consequence)
 	if ie.Alternative != nil {
-		res += fmt.Sprintf(" else %s", ie.Alternative)
+		res += fmt.Sprintf(" else { %s}", ie.Alternative)
 	}
 
 	return res

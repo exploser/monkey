@@ -11,7 +11,7 @@ func TestString(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(tt.input)
+		evaluated := testEval(t, tt.input)
 		switch expected := tt.expected.(type) {
 		case string:
 			testStringObject(t, expected, evaluated, tt)
@@ -30,7 +30,7 @@ func TestStringConcat(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(tt.input)
+		evaluated := testEval(t, tt.input)
 		switch expected := tt.expected.(type) {
 		case string:
 			testStringObject(t, expected, evaluated, tt)

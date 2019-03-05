@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"fmt"
+	"strings"
 
 	"git.exsdev.ru/ExS/monkey/token"
 )
@@ -20,5 +20,11 @@ func (bs *BlockStatement) TokenLiteral() string {
 }
 
 func (bs *BlockStatement) String() string {
-	return fmt.Sprint(bs.Statements)
+	result := strings.Builder{}
+	for _, v := range bs.Statements {
+		result.WriteString(v.String())
+		result.WriteString("; ")
+	}
+
+	return result.String()
 }

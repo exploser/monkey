@@ -1,20 +1,18 @@
 package evaluator_test
 
-import (
-	"testing"
-)
+import "testing"
 
-func TestInfix(t *testing.T) {
+func TestDeclare(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int64
 	}{
-		{"1-27+16", -10},
-		{"1-1 * 10+10 * 1", 1},
+		{"x := 5; x;", 5},
+		{"x := 5; b := x * 2; b*2", 20},
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(tt.input)
+		evaluated := testEval(t, tt.input)
 		testIntegerObject(t, tt.expected, evaluated, tt)
 	}
 }

@@ -35,14 +35,22 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 	switch node := node.(type) {
 	case *ast.Program:
 		return evalProgram(node.Statements, env)
+
 	case *ast.BlockStatement:
 		return evalBlockStatement(node.Statements, env)
+
 	case *ast.Boolean:
 		return evalBooleanExpression(node.Value)
+
 	case *ast.IntegerLiteral:
 		return &types.Integer{Value: node.Value}
+
 	case *ast.StringLiteral:
 		return &types.String{Value: node.Value}
+
+	case *ast.Nil:
+		return NilValue
+
 	case *ast.ArrayLiteral:
 		elems := evalExpressions(node.Elements, env)
 		if len(elems) == 1 && isError(elems[0]) {
@@ -52,12 +60,14 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, env)
+
 	case *ast.PrefixExpression:
 		right := Eval(node.Right, env)
 		if isError(right) {
 			return right
 		}
 		return evalPrefixExpression(node.Operator, right)
+
 	case *ast.InfixExpression:
 		left := Eval(node.Left, env)
 		if isError(left) {
@@ -68,18 +78,18 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 			return right
 		}
 		return evalInfixExpression(left, node.Operator, right)
+
 	case *ast.IfExpression:
 		return evalIfExpression(node, env)
+
 	case *ast.ReturnStatement:
 		right := Eval(node.ReturnValue, env)
 		if isError(right) {
 			return right
 		}
 		return &types.Return{Value: right}
+
 	case *ast.LetStatement:
-		if node == nil {
-			return NilValue
-		}
 		right := Eval(node.Value, env)
 		if isError(right) {
 			return right
@@ -114,7 +124,7 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 			return args[0]
 		}
 
-		return applyFunction(function, args, node.Token.Literal)
+		return applyFunction(function, args, node.TokenLiteral())
 	}
 
 	return NilValue

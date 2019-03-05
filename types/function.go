@@ -27,5 +27,5 @@ func (i *Function) String() string {
 		params[k] = v.String()
 	}
 
-	return fmt.Sprintf("func(%s) %s", strings.Join(params, ", "), i.Body)
+	return fmt.Sprintf("fn (%s) { %s}", strings.Join(params, ", "), i.Body)
 }

@@ -3,6 +3,7 @@ package evaluator_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"git.exsdev.ru/ExS/monkey/evaluator"
@@ -11,10 +12,21 @@ import (
 	"git.exsdev.ru/ExS/monkey/types"
 )
 
-func testEval(input string) types.Object {
+func checkParserErrors(t *testing.T, p *parser.Parser) {
+	if !assert.Empty(t, p.Errors()) {
+		for _, e := range p.Errors() {
+			t.Error(e)
+		}
+
+		t.FailNow()
+	}
+}
+
+func testEval(t *testing.T, input string) types.Object {
 	l := lexer.New(input)
 	p := parser.New(l)
 	program := p.ParseProgram()
+	checkParserErrors(t, p)
 	env := evaluator.GetBaseEnvironment()
 
 	return evaluator.Eval(program, env)

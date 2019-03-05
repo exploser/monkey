@@ -13,6 +13,7 @@ const (
 	Ident  = "Ident"
 	Int    = "Int"
 	String = "String"
+	Nil    = "Nil"
 
 	Assign   = "Assign"
 	Plus     = "Plus"
@@ -57,6 +58,7 @@ func LookupIdent(ident string) TokenType {
 		"return": Return,
 		"true":   True,
 		"false":  False,
+		"nil":    Nil,
 	}
 
 	if t, ok := keywords[ident]; ok {

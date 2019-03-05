@@ -18,10 +18,11 @@ func TestEvalIntegerExpression(t *testing.T) {
 		{"-50 + 100 + -50", 0},
 		{"5 * 2 + 10", 20},
 		{"5 + 2 * 10", 25},
+		{"50 / 10", 5},
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(tt.input)
+		evaluated := testEval(t, tt.input)
 		testIntegerObject(t, tt.expected, evaluated, tt)
 	}
 }
