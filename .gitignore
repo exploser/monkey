@@ -2,3 +2,4 @@
 vendor/
 monkey
 monkey.exe
+.vscode/
