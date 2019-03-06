@@ -1,4 +1,4 @@
-package evaluator_test
+package evaluator
 
 import (
 	"testing"
@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"git.exsdev.ru/ExS/monkey/evaluator"
 	"git.exsdev.ru/ExS/monkey/lexer"
 	"git.exsdev.ru/ExS/monkey/parser"
 	"git.exsdev.ru/ExS/monkey/types"
@@ -27,9 +26,9 @@ func testEval(t *testing.T, input string) types.Object {
 	p := parser.New(l)
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
-	env := evaluator.GetBaseEnvironment()
+	env := GetBaseEnvironment()
 
-	return evaluator.Eval(program, env)
+	return Eval(program, env)
 }
 
 func testBooleanObject(t *testing.T, expected bool, obj types.Object, context interface{}) {
@@ -45,7 +44,7 @@ func testIntegerObject(t *testing.T, expected int64, obj types.Object, context i
 }
 
 func testNullObject(t *testing.T, obj types.Object, context interface{}) {
-	require.Equal(t, evaluator.NilValue, obj, "tc: %v, result: %v", context, obj)
+	require.Equal(t, nilValue, obj, "tc: %v, result: %v", context, obj)
 }
 
 func testError(t *testing.T, obj types.Object, context interface{}) {

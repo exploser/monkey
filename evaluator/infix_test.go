@@ -1,4 +1,4 @@
-package evaluator_test
+package evaluator
 
 import (
 	"testing"

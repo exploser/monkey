@@ -10,7 +10,7 @@ import (
 var (
 	boolTrue  = &types.Boolean{Value: true}
 	boolFalse = &types.Boolean{Value: false}
-	NilValue  = &types.Nil{}
+	nilValue  = &types.Nil{}
 )
 
 func GetBaseEnvironment() *types.Environment {
@@ -49,7 +49,7 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 		return &types.String{Value: node.Value}
 
 	case *ast.Nil:
-		return NilValue
+		return nilValue
 
 	case *ast.ArrayLiteral:
 		elems := evalExpressions(node.Elements, env)
@@ -127,7 +127,7 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 		return applyFunction(function, args, node.TokenLiteral())
 	}
 
-	return NilValue
+	return nilValue
 }
 
 func evalProgram(stmts []ast.Statement, env *types.Environment) types.Object {
@@ -266,7 +266,7 @@ func evalIfExpression(node *ast.IfExpression, env *types.Environment) types.Obje
 		return Eval(node.Alternative, env)
 	}
 
-	return NilValue
+	return nilValue
 }
 
 func evalIdentifier(node *ast.Identifier, env *types.Environment) types.Object {
@@ -326,7 +326,7 @@ func unwrapReturnValue(obj types.Object) types.Object {
 
 func isTruthy(obj types.Object) bool {
 	switch obj {
-	case NilValue, boolFalse:
+	case nilValue, boolFalse:
 		return false
 
 	default:
