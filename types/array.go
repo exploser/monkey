@@ -6,8 +6,6 @@ import (
 
 var _ Object = new(Array)
 
-const ArrayT ObjectType = "Array"
-
 type Array struct {
 	Elements []Object
 }

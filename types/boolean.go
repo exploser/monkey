@@ -4,8 +4,6 @@ import "fmt"
 
 var _ Object = new(Boolean)
 
-const BooleanT ObjectType = "Boolean"
-
 type Boolean struct {
 	Value bool
 }

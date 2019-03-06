@@ -9,8 +9,6 @@ import (
 
 var _ Object = new(Function)
 
-const FunctionT ObjectType = "Function"
-
 type Function struct {
 	Parameters []*ast.Identifier
 	Body       *ast.BlockStatement

@@ -2,8 +2,6 @@ package types
 
 var _ Object = new(Nil)
 
-const NilT ObjectType = "Nil"
-
 type Nil struct {
 }
 

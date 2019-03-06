@@ -1,52 +1,45 @@
 package token
 
-type TokenType string
+//go:generate stringer -type=TokenType
+type TokenType int
 type Token struct {
 	Type    TokenType
 	Literal string
 }
 
 const (
-	Illegal = "Illegal"
-	EOF     = "EOF"
-
-	Ident  = "Ident"
-	Int    = "Int"
-	String = "String"
-	Nil    = "Nil"
-
-	Assign   = "Assign"
-	Plus     = "Plus"
-	Minus    = "Minus"
-	Bang     = "Bang"
-	Asterisk = "Asterisk"
-	Slash    = "Slash"
-
-	Comma     = "Comma"
-	Semicolon = "Semicolon"
-
-	LParen = "LParen"
-	RParen = "RParen"
-
-	LBrace = "LBrace"
-	RBrace = "RBrace"
-
-	LessThan    = "LessThan"
-	GreaterThan = "GreaterThan"
-	Equals      = "Equals"
-	NotEqual    = "NotEqual"
-
-	Function      = "Function"
-	Let           = "Let"
-	DeclareAssign = "DeclareAssign"
-	True          = "True"
-	False         = "False"
-	If            = "If"
-	Else          = "Else"
-	Return        = "Return"
-
-	LBracket = "LBracket"
-	RBracket = "LBracket"
+	Illegal TokenType = iota
+	EOF
+	Ident
+	Int
+	String
+	Nil
+	Assign
+	Plus
+	Minus
+	Bang
+	Asterisk
+	Slash
+	Comma
+	Semicolon
+	LParen
+	RParen
+	LBrace
+	RBrace
+	LessThan
+	GreaterThan
+	Equals
+	NotEqual
+	Function
+	Let
+	DeclareAssign
+	True
+	False
+	If
+	Else
+	Return
+	LBracket
+	RBracket
 )
 
 func LookupIdent(ident string) TokenType {

@@ -3,8 +3,6 @@ package types
 var _ Object = new(Error)
 var _ error = new(Error)
 
-const ErrorT ObjectType = "Error"
-
 type Error struct {
 	E error
 }

@@ -2,8 +2,6 @@ package types
 
 var _ Object = new(String)
 
-const StringT ObjectType = "String"
-
 type String struct {
 	Value string
 }

@@ -2,8 +2,6 @@ package types
 
 var _ Object = new(Return)
 
-const ReturnT ObjectType = "Return"
-
 type Return struct {
 	Value Object
 }

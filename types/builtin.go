@@ -2,8 +2,6 @@ package types
 
 var _ Object = new(Builtin)
 
-const BuiltinT ObjectType = "Builtin"
-
 type BuiltinFunction func(args ...Object) Object
 
 type Builtin struct {

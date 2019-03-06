@@ -4,8 +4,6 @@ import "fmt"
 
 var _ Object = new(Integer)
 
-const IntegerT ObjectType = "Integer"
-
 type Integer struct {
 	Value int64
 }
