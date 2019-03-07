@@ -1,1 +1,36 @@
-enable-all: true
+run:
+  skip-dirs:
+    - vendor
+    - tmp
+    - build
+    - pkg
+    - .git
+    - .vscode
+    - mock
+    - gen
+
+linters:
+  enable-all: true
+  disable:
+    - errcheck
+    - lll
+    - dupl
+    # - gochecknoinits
+    - gochecknoglobals
+    - unparam
+
+issues:
+  exclude:
+    # This project does not have a rule to avoid unkeyed fields
+    - composite literal uses unkeyed fields
+    - Error return value of .((os\.)?std(out|err)\..*|.*Close|.*Flush|os\.Remove(All)?|.*printf?|os\.(Un)?Setenv). is not checked
+    - (comment on exported (method|type|const)|exported (method|type|const) (.*) should have( a package)? comment|comment should be of the form)
+    - Errors unhandled
+
+  exclude-use-default: false
+
+linters-settings:
+  goimports:
+    # put imports beginning with prefix after 3rd-party packages;
+    # it's a comma-separated list of prefixes
+    local-prefixes: github.com/exploser/
