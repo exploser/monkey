@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"git.exsdev.ru/ExS/monkey/test"
 	"git.exsdev.ru/ExS/monkey/types"
 )
 
@@ -32,9 +33,9 @@ func TestFunctionCall(t *testing.T) {
 		evaluated := testEval(t, tt.input)
 		switch expected := tt.expected.(type) {
 		case int:
-			testIntegerObject(t, int64(expected), evaluated, tt)
+			test.Integer(t, int64(expected), evaluated, tt)
 		default:
-			testNullObject(t, evaluated, tt)
+			test.Null(t, evaluated, tt)
 		}
 	}
 }

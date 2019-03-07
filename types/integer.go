@@ -11,3 +11,5 @@ type Integer struct {
 func (i *Integer) String() string {
 	return fmt.Sprint(i.Value)
 }
+
+func (*Integer) object() {}

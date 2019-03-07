@@ -2,6 +2,8 @@ package evaluator
 
 import (
 	"testing"
+
+	"git.exsdev.ru/ExS/monkey/test"
 )
 
 func TestEvalIntegerExpression(t *testing.T) {
@@ -23,6 +25,6 @@ func TestEvalIntegerExpression(t *testing.T) {
 
 	for _, tt := range tests {
 		evaluated := testEval(t, tt.input)
-		testIntegerObject(t, tt.expected, evaluated, tt)
+		test.Integer(t, tt.expected, evaluated, tt)
 	}
 }

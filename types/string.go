@@ -9,3 +9,5 @@ type String struct {
 func (i *String) String() string {
 	return i.Value
 }
+
+func (*String) object() {}

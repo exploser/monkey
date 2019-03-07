@@ -2,6 +2,8 @@ package evaluator
 
 import (
 	"testing"
+
+	"git.exsdev.ru/ExS/monkey/test"
 )
 
 func TestInfix(t *testing.T) {
@@ -15,6 +17,6 @@ func TestInfix(t *testing.T) {
 
 	for _, tt := range tests {
 		evaluated := testEval(t, tt.input)
-		testIntegerObject(t, tt.expected, evaluated, tt)
+		test.Integer(t, tt.expected, evaluated, tt)
 	}
 }

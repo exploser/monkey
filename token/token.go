@@ -1,12 +1,12 @@
 package token
 
-//go:generate stringer -type=TokenType
 type TokenType int
 type Token struct {
 	Type    TokenType
 	Literal string
 }
 
+//go:generate ../stringer -type=TokenType
 const (
 	Illegal TokenType = iota
 	EOF

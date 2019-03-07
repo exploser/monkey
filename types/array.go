@@ -13,3 +13,5 @@ type Array struct {
 func (b *Array) String() string {
 	return fmt.Sprint(b.Elements)
 }
+
+func (*Array) object() {}

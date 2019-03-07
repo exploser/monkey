@@ -1,6 +1,10 @@
 package evaluator
 
-import "testing"
+import (
+	"testing"
+
+	"git.exsdev.ru/ExS/monkey/test"
+)
 
 func TestArray(t *testing.T) {
 	tests := []struct {
@@ -12,6 +16,6 @@ func TestArray(t *testing.T) {
 
 	for _, tt := range tests {
 		evaluated := testEval(t, tt.input)
-		testIntegerArrayObject(t, tt.expected, evaluated, tt)
+		test.IntegerArray(t, tt.expected, evaluated, tt)
 	}
 }

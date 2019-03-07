@@ -4,13 +4,8 @@ import (
 	"fmt"
 
 	"git.exsdev.ru/ExS/monkey/ast"
+	"git.exsdev.ru/ExS/monkey/globals"
 	"git.exsdev.ru/ExS/monkey/types"
-)
-
-var (
-	boolTrue  = &types.Boolean{Value: true}
-	boolFalse = &types.Boolean{Value: false}
-	nilValue  = &types.Nil{}
 )
 
 func GetBaseEnvironment() *types.Environment {
@@ -49,7 +44,7 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 		return &types.String{Value: node.Value}
 
 	case *ast.Nil:
-		return nilValue
+		return globals.Nil
 
 	case *ast.ArrayLiteral:
 		elems := evalExpressions(node.Elements, env)
@@ -127,7 +122,7 @@ func Eval(node ast.Node, env *types.Environment) types.Object {
 		return applyFunction(function, args, node.TokenLiteral())
 	}
 
-	return nilValue
+	return globals.Nil
 }
 
 func evalProgram(stmts []ast.Statement, env *types.Environment) types.Object {
@@ -166,10 +161,10 @@ func evalBlockStatement(stmts []ast.Statement, env *types.Environment) types.Obj
 
 func evalBooleanExpression(value bool) *types.Boolean {
 	if value {
-		return boolTrue
+		return globals.True
 	}
 
-	return boolFalse
+	return globals.False
 }
 
 func evalPrefixExpression(operator string, value types.Object) types.Object {
@@ -186,10 +181,10 @@ func evalPrefixExpression(operator string, value types.Object) types.Object {
 
 func evalBangOperatorExpression(right types.Object) types.Object {
 	if isTruthy(right) {
-		return boolFalse
+		return globals.False
 	}
 
-	return boolTrue
+	return globals.True
 }
 
 func evalMinusOperatorExpression(right types.Object) types.Object {
@@ -266,7 +261,7 @@ func evalIfExpression(node *ast.IfExpression, env *types.Environment) types.Obje
 		return Eval(node.Alternative, env)
 	}
 
-	return nilValue
+	return globals.Nil
 }
 
 func evalIdentifier(node *ast.Identifier, env *types.Environment) types.Object {
@@ -326,7 +321,7 @@ func unwrapReturnValue(obj types.Object) types.Object {
 
 func isTruthy(obj types.Object) bool {
 	switch obj {
-	case nilValue, boolFalse:
+	case globals.Nil, globals.False:
 		return false
 
 	default:

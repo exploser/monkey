@@ -1,6 +1,10 @@
 package evaluator
 
-import "testing"
+import (
+	"testing"
+
+	"git.exsdev.ru/ExS/monkey/test"
+)
 
 func TestString(t *testing.T) {
 	tests := []struct {
@@ -14,9 +18,9 @@ func TestString(t *testing.T) {
 		evaluated := testEval(t, tt.input)
 		switch expected := tt.expected.(type) {
 		case string:
-			testStringObject(t, expected, evaluated, tt)
+			test.String(t, expected, evaluated, tt)
 		default:
-			testNullObject(t, evaluated, tt)
+			test.Null(t, evaluated, tt)
 		}
 	}
 }
@@ -33,9 +37,9 @@ func TestStringConcat(t *testing.T) {
 		evaluated := testEval(t, tt.input)
 		switch expected := tt.expected.(type) {
 		case string:
-			testStringObject(t, expected, evaluated, tt)
+			test.String(t, expected, evaluated, tt)
 		default:
-			testNullObject(t, evaluated, tt)
+			test.Null(t, evaluated, tt)
 		}
 	}
 }

@@ -11,3 +11,5 @@ type Builtin struct {
 func (b *Builtin) String() string {
 	return "_builtin(...)"
 }
+
+func (*Builtin) object() {}

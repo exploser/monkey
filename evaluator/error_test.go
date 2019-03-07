@@ -1,6 +1,10 @@
 package evaluator
 
-import "testing"
+import (
+	"testing"
+
+	"git.exsdev.ru/ExS/monkey/test"
+)
 
 func TestError(t *testing.T) {
 	tests := []struct {
@@ -27,6 +31,6 @@ func TestError(t *testing.T) {
 
 	for _, tt := range tests {
 		evaluated := testEval(t, tt.input)
-		testError(t, evaluated, tt)
+		test.Error(t, evaluated, tt)
 	}
 }

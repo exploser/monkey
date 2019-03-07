@@ -11,3 +11,5 @@ type Boolean struct {
 func (b *Boolean) String() string {
 	return fmt.Sprint(b.Value)
 }
+
+func (*Boolean) object() {}

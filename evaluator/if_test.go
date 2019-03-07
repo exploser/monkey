@@ -1,6 +1,10 @@
 package evaluator
 
-import "testing"
+import (
+	"testing"
+
+	"git.exsdev.ru/ExS/monkey/test"
+)
 
 func TestIf(t *testing.T) {
 	tests := []struct {
@@ -19,9 +23,9 @@ func TestIf(t *testing.T) {
 		evaluated := testEval(t, tt.input)
 		switch expected := tt.expected.(type) {
 		case int:
-			testIntegerObject(t, int64(expected), evaluated, tt)
+			test.Integer(t, int64(expected), evaluated, tt)
 		default:
-			testNullObject(t, evaluated, tt)
+			test.Null(t, evaluated, tt)
 		}
 	}
 }

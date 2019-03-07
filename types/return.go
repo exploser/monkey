@@ -9,3 +9,5 @@ type Return struct {
 func (r *Return) String() string {
 	return r.Value.String()
 }
+
+func (*Return) object() {}

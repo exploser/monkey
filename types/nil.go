@@ -8,3 +8,5 @@ type Nil struct {
 func (i *Nil) String() string {
 	return "nil"
 }
+
+func (*Nil) object() {}

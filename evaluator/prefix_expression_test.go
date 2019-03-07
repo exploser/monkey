@@ -2,6 +2,8 @@ package evaluator
 
 import (
 	"testing"
+
+	"git.exsdev.ru/ExS/monkey/test"
 )
 
 func TestBang(t *testing.T) {
@@ -17,6 +19,6 @@ func TestBang(t *testing.T) {
 
 	for _, tt := range tests {
 		evaluated := testEval(t, tt.input)
-		testBooleanObject(t, tt.expected, evaluated, tt)
+		test.Boolean(t, tt.expected, evaluated, tt)
 	}
 }

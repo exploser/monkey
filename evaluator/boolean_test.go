@@ -1,6 +1,10 @@
 package evaluator
 
-import "testing"
+import (
+	"testing"
+
+	"git.exsdev.ru/ExS/monkey/test"
+)
 
 func TestBoolean(t *testing.T) {
 	tests := []struct {
@@ -21,6 +25,6 @@ func TestBoolean(t *testing.T) {
 
 	for _, tt := range tests {
 		evaluated := testEval(t, tt.input)
-		testBooleanObject(t, tt.expected, evaluated, tt)
+		test.Boolean(t, tt.expected, evaluated, tt)
 	}
 }

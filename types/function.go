@@ -23,3 +23,5 @@ func (i *Function) String() string {
 
 	return fmt.Sprintf("fn (%s) { %s}", strings.Join(params, ", "), i.Body)
 }
+
+func (*Function) object() {}

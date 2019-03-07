@@ -9,3 +9,5 @@ type Error struct {
 func (e Error) String() string {
 	return e.E.Error()
 }
+
+func (*Error) object() {}
