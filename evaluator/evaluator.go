@@ -24,7 +24,7 @@ func GetBaseEnvironment() *types.Environment {
 		case *types.String:
 			return &types.Integer{Value: int64(len(arg.Value))}
 		default:
-			return errorf("operator len not defined for %s", arg.Type())
+			return errorf("operator len not defined for %T", arg)
 		}
 	}})
 
@@ -193,59 +193,59 @@ func evalBangOperatorExpression(right types.Object) types.Object {
 }
 
 func evalMinusOperatorExpression(right types.Object) types.Object {
-	if right.Type() != types.IntegerT {
-		return errorf("operator \"-\" not defined for %s", right.Type())
+	value, ok := right.(*types.Integer)
+	if !ok {
+		return errorf("operator \"-\" not defined for %T", right)
 	}
 
-	value := right.(*types.Integer)
 	return &types.Integer{Value: -value.Value}
 }
 
 func evalInfixExpression(left types.Object, operator string, right types.Object) types.Object {
-	switch {
-	case left.Type() == types.IntegerT && right.Type() == types.IntegerT:
-		return evalIntegerInfixExpression(left, operator, right)
-	case left.Type() == types.StringT && right.Type() == types.StringT:
-		return evalStringInfixExpression(left, operator, right)
-	default:
-		return errorf("operator %q not defined for (%s, %s)", operator, left.Type(), right.Type())
+	switch left := left.(type) {
+	case *types.Integer:
+		if right, ok := right.(*types.Integer); ok {
+			return evalIntegerInfixExpression(left.Value, operator, right.Value)
+		}
+
+	case *types.String:
+		if right, ok := right.(*types.String); ok {
+			return evalStringInfixExpression(left.Value, operator, right.Value)
+		}
 	}
+
+	return errorf("operator %v undefined for (%T, %T)", operator, left, right)
 }
 
-func evalIntegerInfixExpression(left types.Object, operator string, right types.Object) types.Object {
-	leftVal := left.(*types.Integer).Value
-	rightVal := right.(*types.Integer).Value
-
+func evalIntegerInfixExpression(left int64, operator string, right int64) types.Object {
 	switch operator {
 	case "+":
-		return &types.Integer{leftVal + rightVal}
+		return &types.Integer{left + right}
 	case "-":
-		return &types.Integer{leftVal - rightVal}
+		return &types.Integer{left - right}
 	case "*":
-		return &types.Integer{leftVal * rightVal}
+		return &types.Integer{left * right}
 	case "/":
-		return &types.Integer{leftVal / rightVal}
+		return &types.Integer{left / right}
 
 	case "<":
-		return evalBooleanExpression(leftVal < rightVal)
+		return evalBooleanExpression(left < right)
 	case ">":
-		return evalBooleanExpression(leftVal > rightVal)
+		return evalBooleanExpression(left > right)
 	case "==":
-		return evalBooleanExpression(leftVal == rightVal)
+		return evalBooleanExpression(left == right)
 	case "!=":
-		return evalBooleanExpression(leftVal != rightVal)
+		return evalBooleanExpression(left != right)
 
 	default:
 		return errorf("unknown infix operator %q", operator)
 	}
 }
 
-func evalStringInfixExpression(left types.Object, operator string, right types.Object) types.Object {
-	leftVal := left.(*types.String).Value
-	rightVal := right.(*types.String).Value
+func evalStringInfixExpression(left, operator, right string) types.Object {
 	switch operator {
 	case "+":
-		return &types.String{Value: leftVal + rightVal}
+		return &types.String{Value: left + right}
 	default:
 		return errorf("unknown infix operator %q", operator)
 	}
@@ -303,7 +303,7 @@ func applyFunction(fn types.Object, args []types.Object, literal string) types.O
 	case *types.Builtin:
 		return function.Fn(args...)
 	default:
-		return errorf("not a function: %s", fn.Type())
+		return errorf("not a function: %T", fn)
 	}
 }
 

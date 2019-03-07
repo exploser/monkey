@@ -11,7 +11,13 @@ import (
 	"git.exsdev.ru/ExS/monkey/types"
 )
 
-func checkParserErrors(t *testing.T, p *parser.Parser) {
+type Testing interface {
+	Errorf(format string, args ...interface{})
+	Error(args ...interface{})
+	FailNow()
+}
+
+func checkParserErrors(t Testing, p *parser.Parser) {
 	if !assert.Empty(t, p.Errors()) {
 		for _, e := range p.Errors() {
 			t.Error(e)

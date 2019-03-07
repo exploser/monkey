@@ -15,10 +15,6 @@ type Function struct {
 	Env        *Environment
 }
 
-func (*Function) Type() ObjectType {
-	return FunctionT
-}
-
 func (i *Function) String() string {
 	params := make([]string, len(i.Parameters))
 	for k, v := range i.Parameters {

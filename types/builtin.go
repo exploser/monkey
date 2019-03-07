@@ -8,10 +8,6 @@ type Builtin struct {
 	Fn BuiltinFunction
 }
 
-func (*Builtin) Type() ObjectType {
-	return BuiltinT
-}
-
 func (b *Builtin) String() string {
 	return "_builtin(...)"
 }
