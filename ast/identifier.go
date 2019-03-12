@@ -17,6 +17,6 @@ func (i *Identifier) TokenLiteral() string {
 	return i.Token.Literal
 }
 
-func (l *Identifier) String() string {
-	return l.Value
+func (i *Identifier) String() string {
+	return i.Value
 }

@@ -25,6 +25,7 @@ issues:
     - composite literal uses unkeyed fields
     - Error return value of .((os\.)?std(out|err)\..*|.*Close|.*Flush|os\.Remove(All)?|.*printf?|os\.(Un)?Setenv). is not checked
     - (comment on exported (method|type|const)|exported (method|type|const) (.*) should have( a package)? comment|comment should be of the form)
+    - exported function (.*) should have comment or be unexported
     - Errors unhandled
 
   exclude-use-default: false

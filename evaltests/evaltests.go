@@ -10,13 +10,11 @@ import (
 
 type Evaluator func(t testing.TB, input string) types.Object
 
-var e Evaluator
-
 type iparser interface {
 	Errors() []error
 }
 
-func CheckParserErrors(t testing.TB, p iparser) {
+func CheckParserErrors(t *testing.T, p iparser) {
 	t.Helper()
 
 	if !assert.Empty(t, p.Errors()) {
@@ -46,6 +44,10 @@ var tests = map[string]func(t *testing.T, e Evaluator){
 	"stringConcat":          testStringConcat,
 }
 
+var benchmarks = map[string]func(t *testing.B, e Evaluator){
+	"fibonacci": benchmarkFibonacci,
+}
+
 func RunAll(t *testing.T, e Evaluator) {
 	t.Helper()
 
@@ -58,6 +60,30 @@ func Run(t *testing.T, e Evaluator, usertests []string) {
 	t.Helper()
 
 	for _, v := range usertests {
-		tests[v](t, e)
+		if tt, ok := tests[v]; ok {
+			tt(t, e)
+		} else {
+			t.Errorf("test %q not found", v)
+		}
+	}
+}
+
+func BenchmarkAll(b *testing.B, e Evaluator) {
+	b.Helper()
+
+	for _, v := range benchmarks {
+		v(b, e)
+	}
+}
+
+func Benchmark(b *testing.B, e Evaluator, usertests []string) {
+	b.Helper()
+
+	for _, v := range usertests {
+		if tt, ok := benchmarks[v]; ok {
+			tt(b, e)
+		} else {
+			b.Errorf("benchmark %q not found", v)
+		}
 	}
 }

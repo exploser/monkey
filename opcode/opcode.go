@@ -22,4 +22,6 @@ const (
 	Neq
 	Leq
 	Geq
+	Jmp
+	Jnt
 )

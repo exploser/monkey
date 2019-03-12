@@ -23,13 +23,19 @@ func New() *Compiler {
 }
 
 func (c *Compiler) Compile(node ast.Node) error {
+	if node == nil {
+		return nil
+	}
+
 	switch node := node.(type) {
+	case nil:
+		return nil
+
 	case *ast.Program:
-		for _, s := range node.Statements {
-			if err := c.Compile(s); err != nil {
-				return err
-			}
-		}
+		c.compileStatements(node.Statements)
+
+	case *ast.BlockStatement:
+		c.compileStatements(node.Statements)
 
 	case *ast.ExpressionStatement:
 		if err := c.Compile(node.Expression); err != nil {
@@ -56,6 +62,21 @@ func (c *Compiler) Compile(node ast.Node) error {
 			c.emitConst(globals.True)
 		} else {
 			c.emitConst(globals.False)
+		}
+
+	case *ast.IfExpression:
+		if err := c.Compile(node.Condition); err != nil {
+			return err
+		}
+
+		c.emit(opcode.Jnt, len(c.Bytecode.Code))
+
+		if err := c.Compile(node.Consequence); err != nil {
+			return err
+		}
+
+		if err := c.Compile(node.Alternative); err != nil {
+			return err
 		}
 
 	default:
@@ -117,6 +138,16 @@ func (c *Compiler) compilePrefixExpression(e *ast.PrefixExpression) error {
 		c.emit(opcode.Not)
 	case "-":
 		c.emit(opcode.Neg)
+	}
+
+	return nil
+}
+
+func (c *Compiler) compileStatements(stmts []ast.Statement) error {
+	for _, s := range stmts {
+		if err := c.Compile(s); err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -21,11 +21,11 @@ func (ce *CallExpression) TokenLiteral() string {
 	return ce.Token.Literal
 }
 
-func (fl *CallExpression) String() string {
-	params := make([]string, 0, len(fl.Arguments))
-	for _, p := range fl.Arguments {
+func (ce *CallExpression) String() string {
+	params := make([]string, 0, len(ce.Arguments))
+	for _, p := range ce.Arguments {
 		params = append(params, p.String())
 	}
 
-	return fmt.Sprintf("%s(%s)", fl.Function.String(), strings.Join(params, ", "))
+	return fmt.Sprintf("%s(%s)", ce.Function.String(), strings.Join(params, ", "))
 }

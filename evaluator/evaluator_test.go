@@ -22,3 +22,7 @@ func e(t testing.TB, input string) types.Object {
 func TestEverything(t *testing.T) {
 	evaltests.RunAll(t, e)
 }
+
+func BenchmarkEverything(b *testing.B) {
+	evaltests.BenchmarkAll(b, e)
+}

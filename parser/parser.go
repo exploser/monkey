@@ -26,7 +26,7 @@ const (
 	call
 )
 
-var precedences = map[token.TokenType]precedence{
+var precedences = map[token.Type]precedence{
 	token.Equals:        equals,
 	token.NotEqual:      equals,
 	token.LessThan:      lessgreater,
@@ -47,8 +47,8 @@ type Parser struct {
 
 	errors []error
 
-	prefixParseFns map[token.TokenType]prefixParseFn
-	infixParseFns  map[token.TokenType]infixParseFn
+	prefixParseFns map[token.Type]prefixParseFn
+	infixParseFns  map[token.Type]infixParseFn
 }
 
 func New(l *lexer.Lexer) *Parser {
@@ -57,8 +57,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.nextToken()
 	p.nextToken()
 
-	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
-	p.infixParseFns = make(map[token.TokenType]infixParseFn)
+	p.prefixParseFns = make(map[token.Type]prefixParseFn)
+	p.infixParseFns = make(map[token.Type]infixParseFn)
 
 	p.registerPrefix(token.Ident, p.parseIdentifier)
 	p.registerPrefix(token.Int, p.parseIntegerLiteral)
@@ -383,7 +383,7 @@ func (p *Parser) parseArrayExpression() ast.Expression {
 	return &exp
 }
 
-func (p *Parser) parseExpressionList(end token.TokenType) []ast.Expression {
+func (p *Parser) parseExpressionList(end token.Type) []ast.Expression {
 	expressions := make([]ast.Expression, 0)
 
 	if p.peekToken.Type == end {
@@ -417,7 +417,7 @@ func (p *Parser) parseNil() ast.Expression {
 	return &ast.Nil{Token: p.curToken}
 }
 
-func (p *Parser) expectPeek(expect token.TokenType) bool {
+func (p *Parser) expectPeek(expect token.Type) bool {
 	if p.peekToken.Type == expect {
 		p.nextToken()
 		return true
@@ -427,11 +427,11 @@ func (p *Parser) expectPeek(expect token.TokenType) bool {
 	return false
 }
 
-func (p *Parser) registerPrefix(tt token.TokenType, fn prefixParseFn) {
+func (p *Parser) registerPrefix(tt token.Type, fn prefixParseFn) {
 	p.prefixParseFns[tt] = fn
 }
 
-func (p *Parser) registerInfix(tt token.TokenType, fn infixParseFn) {
+func (p *Parser) registerInfix(tt token.Type, fn infixParseFn) {
 	p.infixParseFns[tt] = fn
 }
 

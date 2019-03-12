@@ -62,50 +62,10 @@ func (vm *VM) Run(b bytecode.Bytecode) error {
 				vm.push(&types.String{left.Value + right.Value})
 			}
 
-		case opcode.Sub:
-			right := vm.pop().(*types.Integer)
-			left := vm.pop().(*types.Integer)
-			vm.push(&types.Integer{left.Value - right.Value})
-
-		case opcode.Mul:
-			right := vm.pop().(*types.Integer)
-			left := vm.pop().(*types.Integer)
-			vm.push(&types.Integer{left.Value * right.Value})
-
-		case opcode.Div:
-			right := vm.pop().(*types.Integer)
-			left := vm.pop().(*types.Integer)
-			vm.push(&types.Integer{left.Value / right.Value})
-
-		case opcode.Lt:
-			right := vm.pop().(*types.Integer)
-			left := vm.pop().(*types.Integer)
-			vm.push(&types.Boolean{left.Value < right.Value})
-
-		case opcode.Gt:
-			right := vm.pop().(*types.Integer)
-			left := vm.pop().(*types.Integer)
-			vm.push(&types.Boolean{left.Value > right.Value})
-
-		case opcode.Eq:
-			right := vm.pop().(*types.Integer)
-			left := vm.pop().(*types.Integer)
-			vm.push(&types.Boolean{left.Value == right.Value})
-
-		case opcode.Neq:
-			right := vm.pop().(*types.Integer)
-			left := vm.pop().(*types.Integer)
-			vm.push(&types.Boolean{left.Value != right.Value})
-
-		case opcode.Leq:
-			right := vm.pop().(*types.Integer)
-			left := vm.pop().(*types.Integer)
-			vm.push(&types.Boolean{left.Value <= right.Value})
-
-		case opcode.Geq:
-			right := vm.pop().(*types.Integer)
-			left := vm.pop().(*types.Integer)
-			vm.push(&types.Boolean{left.Value >= right.Value})
+		case opcode.Sub, opcode.Mul, opcode.Div, opcode.Lt, opcode.Gt, opcode.Eq, opcode.Neq, opcode.Leq, opcode.Geq:
+			right := vm.pop()
+			left := vm.pop()
+			vm.executeBinaryOp(op, left, right)
 
 		case opcode.Neg:
 			right := vm.pop().(*types.Integer)
@@ -122,6 +82,51 @@ func (vm *VM) Run(b bytecode.Bytecode) error {
 		default:
 			return fmt.Errorf("unsupported opcode %v", op)
 		}
+	}
+
+	return nil
+}
+
+func (vm *VM) executeBinaryOp(op opcode.Opcode, left, right types.Object) error {
+	_, okr := right.(*types.Integer)
+	_, okl := left.(*types.Integer)
+
+	if okl && okr {
+		return vm.executeBinaryIntegerOp(op, left.(*types.Integer), right.(*types.Integer))
+	}
+
+	if okl != okr {
+		return fmt.Errorf("opcode %v unsupported for operand types %T %T", op, left, right)
+	}
+
+	return nil
+}
+
+func (vm *VM) executeBinaryIntegerOp(op opcode.Opcode, left, right *types.Integer) error {
+	switch op {
+	case opcode.Add:
+		vm.push(&types.Integer{left.Value + right.Value})
+	case opcode.Sub:
+		vm.push(&types.Integer{left.Value - right.Value})
+	case opcode.Mul:
+		vm.push(&types.Integer{left.Value * right.Value})
+	case opcode.Div:
+		vm.push(&types.Integer{left.Value / right.Value})
+	case opcode.Eq:
+		vm.push(&types.Boolean{left.Value == right.Value})
+	case opcode.Neq:
+		vm.push(&types.Boolean{left.Value != right.Value})
+	case opcode.Leq:
+		vm.push(&types.Boolean{left.Value <= right.Value})
+	case opcode.Geq:
+		vm.push(&types.Boolean{left.Value >= right.Value})
+	case opcode.Lt:
+		vm.push(&types.Boolean{left.Value < right.Value})
+	case opcode.Gt:
+		vm.push(&types.Boolean{left.Value > right.Value})
+
+	default:
+		return fmt.Errorf("unsupported opcode %v for integer operation", op)
 	}
 
 	return nil

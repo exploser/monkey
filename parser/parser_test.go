@@ -94,7 +94,7 @@ func testLiteralExpression(t *testing.T, expr ast.Expression, expected interface
 	case int32:
 		testIntegerLiteral(t, expr, int64(v))
 	case int64:
-		testIntegerLiteral(t, expr, int64(v))
+		testIntegerLiteral(t, expr, v)
 	case string:
 		testIdentifier(t, expr, v)
 	case bool:

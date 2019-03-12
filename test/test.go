@@ -9,7 +9,7 @@ import (
 	"git.exsdev.ru/ExS/monkey/types"
 )
 
-func Boolean(t *testing.T, expected bool, obj types.Object, context interface{}) {
+func Boolean(t testing.TB, expected bool, obj types.Object, context interface{}) {
 	t.Helper()
 
 	require.IsType(t, new(types.Boolean), obj, "tc: %+v, result: %v", context, obj)
@@ -17,7 +17,7 @@ func Boolean(t *testing.T, expected bool, obj types.Object, context interface{})
 	require.Equal(t, expected, result.Value, "tc: %+v, result: %v", context, obj)
 }
 
-func Integer(t *testing.T, expected int64, obj types.Object, context interface{}) {
+func Integer(t testing.TB, expected int64, obj types.Object, context interface{}) {
 	t.Helper()
 
 	require.IsType(t, new(types.Integer), obj, "tc: %+v, result: %v", context, obj)
@@ -25,19 +25,19 @@ func Integer(t *testing.T, expected int64, obj types.Object, context interface{}
 	require.Equal(t, expected, result.Value, "tc: %+v, result: %v", context, obj)
 }
 
-func Null(t *testing.T, obj types.Object, context interface{}) {
+func Null(t testing.TB, obj types.Object, context interface{}) {
 	t.Helper()
 
 	require.Equal(t, globals.Nil, obj, "tc: %+v, result: %v", context, obj)
 }
 
-func Error(t *testing.T, obj types.Object, context interface{}) {
+func Error(t testing.TB, obj types.Object, context interface{}) {
 	t.Helper()
 
 	require.IsType(t, new(types.Error), obj, "tc: %+v, result: %v", context, obj)
 }
 
-func String(t *testing.T, expected string, obj types.Object, context interface{}) {
+func String(t testing.TB, expected string, obj types.Object, context interface{}) {
 	t.Helper()
 
 	require.IsType(t, new(types.String), obj, "tc: %+v, result: %v", context, obj)
@@ -45,7 +45,7 @@ func String(t *testing.T, expected string, obj types.Object, context interface{}
 	require.Equal(t, expected, result.Value, "tc: %+v, result: %v", context, obj)
 }
 
-func IntegerArray(t *testing.T, expected []int64, obj types.Object, context interface{}) {
+func IntegerArray(t testing.TB, expected []int64, obj types.Object, context interface{}) {
 	t.Helper()
 
 	require.IsType(t, new(types.Array), obj, "tc: %+v, result: %v", context, obj)

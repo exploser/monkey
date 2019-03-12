@@ -52,3 +52,7 @@ func TestEverything(t *testing.T) {
 		// "stringConcat",
 	})
 }
+
+func BenchmarkEverything(b *testing.B) {
+	evaltests.BenchmarkAll(b, e)
+}

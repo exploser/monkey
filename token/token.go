@@ -1,14 +1,14 @@
 package token
 
-type TokenType int
+type Type int
 type Token struct {
-	Type    TokenType
+	Type    Type
 	Literal string
 }
 
-//go:generate stringer -type=TokenType
+//go:generate stringer -type=Type
 const (
-	Illegal TokenType = iota
+	Illegal Type = iota
 	EOF
 	Ident
 	Int
@@ -42,8 +42,8 @@ const (
 	RBracket
 )
 
-func LookupIdent(ident string) TokenType {
-	keywords := map[string]TokenType{
+func LookupIdent(ident string) Type {
+	keywords := map[string]Type{
 		"fn":     Function,
 		"let":    Let,
 		"if":     If,

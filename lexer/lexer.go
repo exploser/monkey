@@ -107,7 +107,7 @@ func (l *Lexer) NextToken() (tok token.Token) {
 	}
 
 	l.readChar()
-	return
+	return tok
 }
 
 func (l *Lexer) readChar() {
