@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"git.exsdev.ru/ExS/monkey/token"
+	"github.com/vasilevp/monkey/token"
 )
 
 var _ Statement = new(ExpressionStatement)

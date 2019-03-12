@@ -6,9 +6,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"git.exsdev.ru/ExS/monkey/ast"
-	"git.exsdev.ru/ExS/monkey/lexer"
-	"git.exsdev.ru/ExS/monkey/parser"
+	"github.com/vasilevp/monkey/ast"
+	"github.com/vasilevp/monkey/lexer"
+	"github.com/vasilevp/monkey/parser"
 )
 
 func TestReturnStatements(t *testing.T) {

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"git.exsdev.ru/ExS/monkey/evaluator"
-	"git.exsdev.ru/ExS/monkey/lexer"
-	"git.exsdev.ru/ExS/monkey/parser"
+	"github.com/vasilevp/monkey/evaluator"
+	"github.com/vasilevp/monkey/lexer"
+	"github.com/vasilevp/monkey/parser"
 	"github.com/gopherjs/vecty"
 	"github.com/gopherjs/vecty/elem"
 	"github.com/gopherjs/vecty/event"

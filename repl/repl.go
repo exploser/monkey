@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	"git.exsdev.ru/ExS/monkey/evaluator"
+	"github.com/vasilevp/monkey/evaluator"
 
-	"git.exsdev.ru/ExS/monkey/lexer"
-	"git.exsdev.ru/ExS/monkey/parser"
+	"github.com/vasilevp/monkey/lexer"
+	"github.com/vasilevp/monkey/parser"
 )
 
 const prompt = "=> "

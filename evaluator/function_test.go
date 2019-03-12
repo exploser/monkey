@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"git.exsdev.ru/ExS/monkey/types"
+	"github.com/vasilevp/monkey/types"
 )
 
 func TestFunction(t *testing.T) {

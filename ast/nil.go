@@ -1,6 +1,6 @@
 package ast
 
-import "git.exsdev.ru/ExS/monkey/token"
+import "github.com/vasilevp/monkey/token"
 
 var _ Expression = new(Nil)
 

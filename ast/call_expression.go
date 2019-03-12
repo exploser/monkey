@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"git.exsdev.ru/ExS/monkey/token"
+	"github.com/vasilevp/monkey/token"
 )
 
 var _ Expression = new(CallExpression)

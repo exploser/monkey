@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	. "git.exsdev.ru/ExS/monkey/ast"
-	"git.exsdev.ru/ExS/monkey/token"
+	. "github.com/vasilevp/monkey/ast"
+	"github.com/vasilevp/monkey/token"
 )
 
 func TestAstString(t *testing.T) {
