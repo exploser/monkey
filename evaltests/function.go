@@ -1,4 +1,4 @@
-package evaluator
+package evaltests
 
 import (
 	"testing"
@@ -9,10 +9,10 @@ import (
 	"git.exsdev.ru/ExS/monkey/types"
 )
 
-func TestFunction(t *testing.T) {
+func testFunction(t *testing.T, e Evaluator) {
 	input := "fn(x) { return x + 2;}"
 
-	evaluated := testEval(t, input)
+	evaluated := e(t, input)
 	require.IsType(t, new(types.Function), evaluated)
 	fn := evaluated.(*types.Function)
 	require.Len(t, fn.Parameters, 1)
@@ -20,7 +20,7 @@ func TestFunction(t *testing.T) {
 	require.Equal(t, "return (x + 2); ", fn.Body.String())
 }
 
-func TestFunctionCall(t *testing.T) {
+func testFunctionCall(t *testing.T, e Evaluator) {
 	tests := []struct {
 		input    string
 		expected interface{}
@@ -30,7 +30,7 @@ func TestFunctionCall(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(t, tt.input)
+		evaluated := e(t, tt.input)
 		switch expected := tt.expected.(type) {
 		case int:
 			test.Integer(t, int64(expected), evaluated, tt)

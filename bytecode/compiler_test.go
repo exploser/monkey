@@ -1,14 +1,16 @@
-package bytecode
+package bytecode_test
 
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
+	. "git.exsdev.ru/ExS/monkey/bytecode"
 	"git.exsdev.ru/ExS/monkey/lexer"
 	"git.exsdev.ru/ExS/monkey/opcode"
 	"git.exsdev.ru/ExS/monkey/parser"
 	"git.exsdev.ru/ExS/monkey/test"
 	"git.exsdev.ru/ExS/monkey/types"
-	"github.com/stretchr/testify/require"
 )
 
 type compilerTest struct {
@@ -22,22 +24,22 @@ func TestIntegerArithmetic(t *testing.T) {
 		{
 			"1 + 2",
 			c(1, 2),
-			i(Make(opcode.Const, 0), Make(opcode.Const, 1), Make(opcode.Add)),
+			i(Make(opcode.Const, 0), Make(opcode.Const, 1), Make(opcode.Add), Make(opcode.Pop)),
 		},
 		{
 			"1 - 2 * 3",
-			c(1, 2),
-			i(Make(opcode.Const, 0), Make(opcode.Const, 1), Make(opcode.Sub)),
+			c(1, 2, 3),
+			i(Make(opcode.Const, 0), Make(opcode.Const, 1), Make(opcode.Const, 2), Make(opcode.Mul), Make(opcode.Sub), Make(opcode.Pop)),
 		},
 		{
 			"1 * 211",
 			c(1, 211),
-			i(Make(opcode.Const, 0), Make(opcode.Const, 1), Make(opcode.Mul)),
+			i(Make(opcode.Const, 0), Make(opcode.Const, 1), Make(opcode.Mul), Make(opcode.Pop)),
 		},
 		{
 			"1 / 2",
 			c(1, 2),
-			i(Make(opcode.Const, 0), Make(opcode.Const, 1), Make(opcode.Div)),
+			i(Make(opcode.Const, 0), Make(opcode.Const, 1), Make(opcode.Div), Make(opcode.Pop)),
 		},
 	}
 	runCompilerTests(t, tt)

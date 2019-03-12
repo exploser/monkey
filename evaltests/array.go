@@ -1,4 +1,4 @@
-package evaluator
+package evaltests
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"git.exsdev.ru/ExS/monkey/test"
 )
 
-func TestArray(t *testing.T) {
+func testArray(t *testing.T, e Evaluator) {
 	tests := []struct {
 		input    string
 		expected []int64
@@ -15,7 +15,7 @@ func TestArray(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(t, tt.input)
+		evaluated := e(t, tt.input)
 		test.IntegerArray(t, tt.expected, evaluated, tt)
 	}
 }

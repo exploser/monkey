@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
+	"git.exsdev.ru/ExS/monkey/bytecode"
 	"git.exsdev.ru/ExS/monkey/evaluator"
-
 	"git.exsdev.ru/ExS/monkey/lexer"
 	"git.exsdev.ru/ExS/monkey/parser"
 )
@@ -29,8 +29,11 @@ func Start(in io.Reader, out io.Writer) {
 
 		prog := p.ParseProgram()
 		for _, e := range p.Errors() {
-			fmt.Println(e)
+			fmt.Println("parser:", e)
+			continue
 		}
+
+		fmt.Println("input:", prog.String())
 
 		evaluated := evaluator.Eval(prog, env)
 		if evaluated == nil {
@@ -38,7 +41,16 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		fmt.Println(evaluated)
-		fmt.Println("input: ", prog.String())
+		fmt.Println("eval:", evaluated)
+
+		compiler := bytecode.New()
+		err := compiler.Compile(prog)
+		if err != nil {
+			fmt.Println("compiler:", err)
+			continue
+		}
+
+		fmt.Println("compiler:", compiler.Bytecode)
+
 	}
 }

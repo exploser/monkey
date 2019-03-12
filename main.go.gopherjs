@@ -41,7 +41,7 @@ func EvalProgram(input string) string {
 			out.WriteString("; ")
 		}
 
-		evaluated := evaluator.Eval(prog, env)
+		evaluated := evaluator.curEvalprog, env)
 		if evaluated == nil {
 			out.WriteString("eval: (nil); ")
 			continue

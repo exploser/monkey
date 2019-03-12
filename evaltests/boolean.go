@@ -1,4 +1,4 @@
-package evaluator
+package evaltests
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"git.exsdev.ru/ExS/monkey/test"
 )
 
-func TestBoolean(t *testing.T) {
+func testBoolean(t *testing.T, e Evaluator) {
 	tests := []struct {
 		input    string
 		expected bool
@@ -24,7 +24,7 @@ func TestBoolean(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(t, tt.input)
+		evaluated := e(t, tt.input)
 		test.Boolean(t, tt.expected, evaluated, tt)
 	}
 }

@@ -4,9 +4,9 @@ package opcode
 
 import "strconv"
 
-const _Opcode_name = "ConstPopAddSubMulDivNotNeg"
+const _Opcode_name = "ConstPopPushAddSubMulDivNotNegLtGtEqNeqLeqGeq"
 
-var _Opcode_index = [...]uint8{0, 5, 8, 11, 14, 17, 20, 23, 26}
+var _Opcode_index = [...]uint8{0, 5, 8, 12, 15, 18, 21, 24, 27, 30, 32, 34, 36, 39, 42, 45}
 
 func (i Opcode) String() string {
 	if i >= Opcode(len(_Opcode_index)-1) {

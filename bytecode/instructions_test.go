@@ -1,10 +1,12 @@
-package bytecode
+package bytecode_test
 
 import (
 	"testing"
 
-	"git.exsdev.ru/ExS/monkey/opcode"
 	"github.com/stretchr/testify/require"
+
+	. "git.exsdev.ru/ExS/monkey/bytecode"
+	"git.exsdev.ru/ExS/monkey/opcode"
 )
 
 func TestInstructionsString(t *testing.T) {

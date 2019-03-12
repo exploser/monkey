@@ -1,4 +1,4 @@
-package evaluator
+package evaltests
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"git.exsdev.ru/ExS/monkey/test"
 )
 
-func TestString(t *testing.T) {
+func testString(t *testing.T, e Evaluator) {
 	tests := []struct {
 		input    string
 		expected interface{}
@@ -15,7 +15,7 @@ func TestString(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(t, tt.input)
+		evaluated := e(t, tt.input)
 		switch expected := tt.expected.(type) {
 		case string:
 			test.String(t, expected, evaluated, tt)
@@ -25,7 +25,7 @@ func TestString(t *testing.T) {
 	}
 }
 
-func TestStringConcat(t *testing.T) {
+func testStringConcat(t *testing.T, e Evaluator) {
 	tests := []struct {
 		input    string
 		expected interface{}
@@ -34,7 +34,7 @@ func TestStringConcat(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(t, tt.input)
+		evaluated := e(t, tt.input)
 		switch expected := tt.expected.(type) {
 		case string:
 			test.String(t, expected, evaluated, tt)

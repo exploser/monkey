@@ -1,4 +1,4 @@
-package evaluator
+package evaltests
 
 import (
 	"testing"
@@ -6,17 +6,17 @@ import (
 	"git.exsdev.ru/ExS/monkey/test"
 )
 
-func TestInfix(t *testing.T) {
+func testLet(t *testing.T, e Evaluator) {
 	tests := []struct {
 		input    string
 		expected int64
 	}{
-		{"1-27+16", -10},
-		{"1-1 * 10+10 * 1", 1},
+		{"let x = 5; x;", 5},
+		{"let x = 5; let b = x * 2; b * 2;", 20},
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(t, tt.input)
+		evaluated := e(t, tt.input)
 		test.Integer(t, tt.expected, evaluated, tt)
 	}
 }

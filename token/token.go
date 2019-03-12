@@ -6,7 +6,7 @@ type Token struct {
 	Literal string
 }
 
-//go:generate ../stringer -type=TokenType
+//go:generate stringer -type=TokenType
 const (
 	Illegal TokenType = iota
 	EOF

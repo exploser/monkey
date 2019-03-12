@@ -1,4 +1,4 @@
-package evaluator
+package evaltests
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"git.exsdev.ru/ExS/monkey/test"
 )
 
-func TestDeclare(t *testing.T) {
+func testDeclare(t *testing.T, e Evaluator) {
 	tests := []struct {
 		input    string
 		expected int64
@@ -16,7 +16,7 @@ func TestDeclare(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		evaluated := testEval(t, tt.input)
+		evaluated := e(t, tt.input)
 		test.Integer(t, tt.expected, evaluated, tt)
 	}
 }
