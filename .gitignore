@@ -3,3 +3,4 @@ vendor/
 monkey
 monkey.exe
 .vscode/
+**/debug.test
