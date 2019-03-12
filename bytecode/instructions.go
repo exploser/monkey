@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"git.exsdev.ru/ExS/monkey/opcode"
+	"github.com/vasilevp/monkey/opcode"
 )
 
 type Instructions []byte

@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	. "git.exsdev.ru/ExS/monkey/bytecode"
-	"git.exsdev.ru/ExS/monkey/lexer"
-	"git.exsdev.ru/ExS/monkey/opcode"
-	"git.exsdev.ru/ExS/monkey/parser"
-	"git.exsdev.ru/ExS/monkey/test"
-	"git.exsdev.ru/ExS/monkey/types"
+	. "github.com/vasilevp/monkey/bytecode"
+	"github.com/vasilevp/monkey/lexer"
+	"github.com/vasilevp/monkey/opcode"
+	"github.com/vasilevp/monkey/parser"
+	"github.com/vasilevp/monkey/test"
+	"github.com/vasilevp/monkey/types"
 )
 
 type compilerTest struct {

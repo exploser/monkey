@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"git.exsdev.ru/ExS/monkey/globals"
-	"git.exsdev.ru/ExS/monkey/types"
+	"github.com/vasilevp/monkey/globals"
+	"github.com/vasilevp/monkey/types"
 )
 
 func Boolean(t testing.TB, expected bool, obj types.Object, context interface{}) {

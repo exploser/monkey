@@ -3,7 +3,7 @@ package ast
 import (
 	"fmt"
 
-	"git.exsdev.ru/ExS/monkey/token"
+	"github.com/vasilevp/monkey/token"
 )
 
 var _ Expression = new(ArrayLiteral)

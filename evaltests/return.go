@@ -3,7 +3,7 @@ package evaltests
 import (
 	"testing"
 
-	"git.exsdev.ru/ExS/monkey/test"
+	"github.com/vasilevp/monkey/test"
 )
 
 func testReturn(t *testing.T, e Evaluator) {

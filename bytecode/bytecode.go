@@ -3,8 +3,8 @@ package bytecode
 import (
 	"encoding/binary"
 
-	"git.exsdev.ru/ExS/monkey/opcode"
-	"git.exsdev.ru/ExS/monkey/types"
+	"github.com/vasilevp/monkey/opcode"
+	"github.com/vasilevp/monkey/types"
 )
 
 type Bytecode struct {

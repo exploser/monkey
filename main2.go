@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"git.exsdev.ru/ExS/monkey/repl"
+	"github.com/vasilevp/monkey/repl"
 )
 
 //go:generate go build tools/cmd/stringer/stringer.go

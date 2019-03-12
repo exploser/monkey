@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	. "git.exsdev.ru/ExS/monkey/lexer"
-	"git.exsdev.ru/ExS/monkey/token"
+	. "github.com/vasilevp/monkey/lexer"
+	"github.com/vasilevp/monkey/token"
 )
 
 func TestNextToken(t *testing.T) {

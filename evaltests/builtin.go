@@ -3,7 +3,7 @@ package evaltests
 import (
 	"testing"
 
-	"git.exsdev.ru/ExS/monkey/test"
+	"github.com/vasilevp/monkey/test"
 )
 
 func testLen(t *testing.T, e Evaluator) {

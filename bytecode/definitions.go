@@ -1,7 +1,7 @@
 package bytecode
 
 import (
-	"git.exsdev.ru/ExS/monkey/opcode"
+	"github.com/vasilevp/monkey/opcode"
 )
 
 type operandWidth []int

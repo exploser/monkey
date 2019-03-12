@@ -3,9 +3,9 @@ package evaluator
 import (
 	"fmt"
 
-	"git.exsdev.ru/ExS/monkey/ast"
-	"git.exsdev.ru/ExS/monkey/globals"
-	"git.exsdev.ru/ExS/monkey/types"
+	"github.com/vasilevp/monkey/ast"
+	"github.com/vasilevp/monkey/globals"
+	"github.com/vasilevp/monkey/types"
 )
 
 func GetBaseEnvironment() *types.Environment {

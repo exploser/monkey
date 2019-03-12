@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"git.exsdev.ru/ExS/monkey/types"
+	"github.com/vasilevp/monkey/types"
 )
 
 type Evaluator func(t testing.TB, input string) types.Object

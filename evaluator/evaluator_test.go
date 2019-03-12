@@ -3,11 +3,11 @@ package evaluator_test
 import (
 	"testing"
 
-	"git.exsdev.ru/ExS/monkey/evaltests"
-	"git.exsdev.ru/ExS/monkey/evaluator"
-	"git.exsdev.ru/ExS/monkey/lexer"
-	"git.exsdev.ru/ExS/monkey/parser"
-	"git.exsdev.ru/ExS/monkey/types"
+	"github.com/vasilevp/monkey/evaltests"
+	"github.com/vasilevp/monkey/evaluator"
+	"github.com/vasilevp/monkey/lexer"
+	"github.com/vasilevp/monkey/parser"
+	"github.com/vasilevp/monkey/types"
 )
 
 func e(t testing.TB, input string) types.Object {

@@ -3,10 +3,10 @@ package vm
 import (
 	"fmt"
 
-	"git.exsdev.ru/ExS/monkey/bytecode"
-	"git.exsdev.ru/ExS/monkey/globals"
-	"git.exsdev.ru/ExS/monkey/opcode"
-	"git.exsdev.ru/ExS/monkey/types"
+	"github.com/vasilevp/monkey/bytecode"
+	"github.com/vasilevp/monkey/globals"
+	"github.com/vasilevp/monkey/opcode"
+	"github.com/vasilevp/monkey/types"
 )
 
 type VM struct {

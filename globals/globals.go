@@ -1,6 +1,6 @@
 package globals
 
-import "git.exsdev.ru/ExS/monkey/types"
+import "github.com/vasilevp/monkey/types"
 
 // Singletons for elementary values
 var (

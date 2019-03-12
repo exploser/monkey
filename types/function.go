@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"git.exsdev.ru/ExS/monkey/ast"
+	"github.com/vasilevp/monkey/ast"
 )
 
 var _ Object = new(Function)

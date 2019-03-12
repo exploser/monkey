@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	. "git.exsdev.ru/ExS/monkey/bytecode"
-	"git.exsdev.ru/ExS/monkey/opcode"
+	. "github.com/vasilevp/monkey/bytecode"
+	"github.com/vasilevp/monkey/opcode"
 )
 
 func TestInstructionsString(t *testing.T) {
